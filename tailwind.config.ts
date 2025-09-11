@@ -19,6 +19,14 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        
+        // Andreas & Co. Brand Colors
+        brass: "hsl(var(--brass))",
+        'ny-green': "hsl(var(--ny-green))",
+        coal: "hsl(var(--coal))",
+        porcelain: "hsl(var(--porcelain))",
+        steel: "hsl(var(--steel))",
+        
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -47,16 +55,19 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        sidebar: {
-          DEFAULT: "hsl(var(--sidebar-background))",
-          foreground: "hsl(var(--sidebar-foreground))",
-          primary: "hsl(var(--sidebar-primary))",
-          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-          accent: "hsl(var(--sidebar-accent))",
-          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-          border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--sidebar-ring))",
-        },
+      },
+      fontFamily: {
+        'display': ['Playfair Display', 'serif'],
+        'body': ['Inter', 'sans-serif'],
+        'sans': ['Inter', 'sans-serif'],
+      },
+      backgroundImage: {
+        'gradient-brass': 'var(--gradient-brass)',
+        'gradient-dark': 'var(--gradient-dark)',
+      },
+      boxShadow: {
+        'luxury': 'var(--shadow-luxury)',
+        'brass': 'var(--shadow-brass)',
       },
       borderRadius: {
         lg: "var(--radius)",

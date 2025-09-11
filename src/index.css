@@ -1,96 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Andreas & Co. Design System - NYC Art Deco Premium Grooming Lounge */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Brand Colors - Andreas & Co. */
+    --brass: 40 57% 57%;           /* #C7A45A - Accents, CTAs, keylines */
+    --ny-green: 162 52% 11%;       /* #0D2B25 - Primary surfaces */
+    --coal: 205 16% 6%;            /* #0A0D0E - Header/footer/background */
+    --porcelain: 50 25% 95%;       /* #F3F2ED - Body text/light backgrounds */
+    --steel: 217 5% 48%;           /* #6C6F73 - Secondary text/UI */
+    
+    /* Semantic tokens */
+    --background: var(--coal);
+    --foreground: var(--porcelain);
+    
+    --card: var(--ny-green);
+    --card-foreground: var(--porcelain);
+    
+    --popover: var(--ny-green);
+    --popover-foreground: var(--porcelain);
+    
+    --primary: var(--brass);
+    --primary-foreground: var(--coal);
+    
+    --secondary: var(--ny-green);
+    --secondary-foreground: var(--porcelain);
+    
+    --muted: var(--steel);
+    --muted-foreground: var(--porcelain);
+    
+    --accent: var(--brass);
+    --accent-foreground: var(--coal);
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: var(--porcelain);
+    
+    --border: 162 20% 20%;
+    --input: var(--ny-green);
+    --ring: var(--brass);
+    
+    --radius: 0.25rem;
+    
+    /* Art Deco Elements */
+    --gradient-brass: linear-gradient(135deg, hsl(var(--brass)), hsl(40 57% 47%));
+    --gradient-dark: linear-gradient(180deg, hsl(var(--coal)), hsl(var(--ny-green)));
+    --shadow-luxury: 0 25px 50px -12px hsl(var(--coal) / 0.8);
+    --shadow-brass: 0 0 30px hsl(var(--brass) / 0.3);
+    
+    /* Typography scales */
+    --font-display: 'Playfair Display', serif;
+    --font-body: 'Inter', sans-serif;
+    
+    /* Animation values */
+    --transition-luxury: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+  
+  /* Light theme overrides for Porcelain backgrounds */
+  .light {
+    --background: var(--porcelain);
+    --foreground: var(--coal);
+    --card: 0 0% 100%;
+    --border: 162 15% 85%;
   }
 }
 
@@ -98,8 +73,99 @@ All colors MUST be HSL.
   * {
     @apply border-border;
   }
-
+  
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-body antialiased;
+    background-image: 
+      radial-gradient(circle at 20% 50%, hsl(var(--ny-green) / 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, hsl(var(--brass) / 0.05) 0%, transparent 50%);
+  }
+  
+  /* Art Deco typography */
+  .font-display {
+    font-family: var(--font-display);
+    font-feature-settings: 'kern' 1, 'liga' 1;
+  }
+  
+  .font-body {
+    font-family: var(--font-body);
+    font-feature-settings: 'kern' 1, 'tnum' 1;
+  }
+  
+  /* Art Deco decorative elements */
+  .deco-frame {
+    position: relative;
+  }
+  
+  .deco-frame::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: var(--gradient-brass);
+    border-radius: inherit;
+    z-index: -1;
+    opacity: 0.1;
+  }
+  
+  .brass-keyline {
+    border-image: var(--gradient-brass) 1;
+  }
+  
+  /* Luxury interactive states */
+  .luxury-hover {
+    transition: var(--transition-luxury);
+  }
+  
+  .luxury-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-luxury);
+  }
+  
+  .brass-glow:hover {
+    box-shadow: var(--shadow-brass);
+  }
+}
+
+@layer components {
+  /* Art Deco button variants */
+  .btn-brass {
+    @apply bg-gradient-to-r from-brass to-brass/80 text-coal font-medium px-8 py-4 rounded-sm;
+    @apply hover:from-brass/90 hover:to-brass/70 transition-all duration-300;
+    @apply focus:ring-2 focus:ring-brass focus:ring-offset-2 focus:ring-offset-background;
+    box-shadow: 0 4px 14px 0 hsl(var(--brass) / 0.39);
+  }
+  
+  .btn-outline-brass {
+    @apply border-2 border-brass text-brass bg-transparent px-8 py-4 rounded-sm;
+    @apply hover:bg-brass hover:text-coal transition-all duration-300;
+    @apply focus:ring-2 focus:ring-brass focus:ring-offset-2 focus:ring-offset-background;
+  }
+  
+  .btn-ghost {
+    @apply text-porcelain hover:text-brass hover:bg-brass/10 px-6 py-3 rounded-sm;
+    @apply transition-all duration-300;
+  }
+  
+  /* Art Deco card styles */
+  .card-luxury {
+    @apply bg-card/90 backdrop-blur-sm border border-border/50 rounded-sm;
+    @apply shadow-lg hover:shadow-xl transition-all duration-300;
+  }
+  
+  /* Premium text styles */
+  .text-hero {
+    @apply font-display text-5xl md:text-7xl font-bold leading-tight;
+    background: var(--gradient-brass);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .text-display {
+    @apply font-display text-3xl md:text-4xl font-semibold text-porcelain;
+  }
+  
+  .text-body-large {
+    @apply font-body text-lg md:text-xl leading-relaxed text-muted-foreground;
   }
 }
