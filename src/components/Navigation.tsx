@@ -25,9 +25,13 @@ const Navigation = () => {
           <div className="flex-shrink-0">
             <NavLink 
               to="/" 
-              className="text-2xl font-display font-bold text-brass hover:text-brass/80 transition-colors"
+              className="flex items-center hover:opacity-80 transition-opacity"
             >
-              Andreas & Co.
+              <img 
+                src="/lovable-uploads/b046a3c5-1c1b-45b4-bec5-34fe783f8f54.png" 
+                alt="Andreas & Co. Grooming Lounge"
+                className="h-12 w-12 md:h-14 md:w-14"
+              />
             </NavLink>
           </div>
 

@@ -106,10 +106,12 @@ const Footer = () => {
         <div className="mt-8 pt-8 border-t border-brass/20">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-4 mb-4 md:mb-0">
-              {/* Monogram Seal */}
-              <div className="w-12 h-12 rounded-full bg-gradient-brass flex items-center justify-center">
-                <span className="font-display font-bold text-coal text-sm">A&Co</span>
-              </div>
+              {/* Logo */}
+              <img 
+                src="/lovable-uploads/b046a3c5-1c1b-45b4-bec5-34fe783f8f54.png" 
+                alt="Andreas & Co. Grooming Lounge"
+                className="h-12 w-12"
+              />
               <div>
                 <p className="font-display font-semibold text-brass">Andreas & Co.</p>
                 <p className="text-sm text-steel">Grooming Lounge</p>
