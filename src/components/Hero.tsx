@@ -35,7 +35,7 @@ const Hero = () => {
             <img 
               src="/lovable-uploads/b046a3c5-1c1b-45b4-bec5-34fe783f8f54.png" 
               alt="Andreas & Co. Grooming Lounge"
-              className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 mx-auto mb-6 animate-float hover:scale-110 transition-transform duration-500"
+              className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 mx-auto mb-6 hover:scale-110 transition-transform duration-500"
             />
           </div>
           
