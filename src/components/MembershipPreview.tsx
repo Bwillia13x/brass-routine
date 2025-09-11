@@ -45,7 +45,7 @@ const MembershipPreview = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-16 animate-fade-in">
           <h2 className="text-display mb-6">
             Look Sharp, Always
           </h2>
@@ -60,30 +60,31 @@ const MembershipPreview = () => {
           {memberships.map((membership, index) => (
             <div 
               key={index} 
-              className={`card-luxury p-8 luxury-hover relative ${
+              className={`card-luxury p-8 luxury-hover relative group animate-scale-in ${
                 membership.popular ? 'ring-2 ring-brass' : ''
               }`}
+              style={{ animationDelay: `${index * 0.3}s` }}
             >
               {membership.popular && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <div className="bg-gradient-brass text-coal px-6 py-2 rounded-full text-sm font-semibold flex items-center space-x-2">
-                    <Crown className="w-4 h-4" />
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 animate-float">
+                  <div className="bg-gradient-brass text-coal px-6 py-2 rounded-full text-sm font-semibold flex items-center space-x-2 group-hover:animate-pulse">
+                    <Crown className="w-4 h-4 group-hover:scale-110 transition-transform" />
                     <span>Most Popular</span>
                   </div>
                 </div>
               )}
 
               <div className="text-center mb-8">
-                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-brass rounded-full flex items-center justify-center">
-                  <membership.icon className="w-8 h-8 text-coal" />
+                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-brass rounded-full flex items-center justify-center group-hover:animate-pulse-brass transition-all duration-300">
+                  <membership.icon className="w-8 h-8 text-coal group-hover:scale-110 transition-transform" />
                 </div>
                 
-                <h3 className="font-display text-2xl font-bold text-porcelain mb-2">
+                <h3 className="font-display text-2xl font-bold text-porcelain mb-2 group-hover:text-brass transition-colors">
                   {membership.name}
                 </h3>
                 
                 <div className="flex items-baseline justify-center space-x-1">
-                  <span className="font-display text-4xl font-bold text-brass">
+                  <span className="font-display text-4xl font-bold text-brass group-hover:animate-pulse">
                     {membership.price}
                   </span>
                   <span className="text-steel">{membership.period}</span>
@@ -96,8 +97,12 @@ const MembershipPreview = () => {
 
               <ul className="space-y-4 mb-8">
                 {membership.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-start space-x-3">
-                    <div className="w-5 h-5 bg-gradient-brass rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <li 
+                    key={idx} 
+                    className="flex items-start space-x-3 animate-fade-in"
+                    style={{ animationDelay: `${0.5 + idx * 0.1}s` }}
+                  >
+                    <div className="w-5 h-5 bg-gradient-brass rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform">
                       <Check className="w-3 h-3 text-coal" />
                     </div>
                     <span className="text-porcelain">{feature}</span>
@@ -106,10 +111,10 @@ const MembershipPreview = () => {
               </ul>
 
               <Button 
-                className={`w-full ${membership.popular ? 'btn-brass' : 'btn-outline-brass'}`}
+                className={`w-full group/btn ${membership.popular ? 'btn-brass' : 'btn-outline-brass'}`}
                 onClick={() => window.location.href = `/membership?plan=${membership.name.toLowerCase()}`}
               >
-                {membership.cta}
+                <span className="group-hover/btn:animate-pulse">{membership.cta}</span>
               </Button>
             </div>
           ))}
@@ -159,19 +164,19 @@ const MembershipPreview = () => {
           <p className="text-steel mb-6">
             Kindly provide 12-hour notice for changes; a card on file secures your slot.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in [animation-delay:1s]">
             <Button 
-              className="btn-brass"
+              className="btn-brass group"
               onClick={() => window.location.href = '/membership'}
             >
-              Compare All Benefits
+              <span className="group-hover:animate-pulse">Compare All Benefits</span>
             </Button>
             <Button 
               variant="outline" 
-              className="btn-outline-brass"
+              className="btn-outline-brass group"
               onClick={() => window.location.href = '/book'}
             >
-              Try a Service First
+              <span className="group-hover:animate-pulse">Try a Service First</span>
             </Button>
           </div>
         </div>

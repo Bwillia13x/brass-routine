@@ -127,45 +127,171 @@
 }
 
 @layer components {
-  /* Art Deco button variants */
+  /* Enhanced Art Deco button variants */
   .btn-brass {
     @apply bg-gradient-to-r from-brass to-brass/80 text-coal font-medium px-8 py-4 rounded-sm;
     @apply hover:from-brass/90 hover:to-brass/70 transition-all duration-300;
     @apply focus:ring-2 focus:ring-brass focus:ring-offset-2 focus:ring-offset-background;
+    @apply hover:scale-105 hover:shadow-brass active:scale-95;
     box-shadow: 0 4px 14px 0 hsl(var(--brass) / 0.39);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-brass::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+  
+  .btn-brass:hover::before {
+    left: 100%;
   }
   
   .btn-outline-brass {
     @apply border-2 border-brass text-brass bg-transparent px-8 py-4 rounded-sm;
     @apply hover:bg-brass hover:text-coal transition-all duration-300;
     @apply focus:ring-2 focus:ring-brass focus:ring-offset-2 focus:ring-offset-background;
+    @apply hover:scale-105 hover:shadow-brass/50;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-outline-brass::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gradient-brass);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+  }
+  
+  .btn-outline-brass:hover::after {
+    opacity: 1;
   }
   
   .btn-ghost {
     @apply text-porcelain hover:text-brass hover:bg-brass/10 px-6 py-3 rounded-sm;
-    @apply transition-all duration-300;
+    @apply transition-all duration-300 hover:scale-105;
   }
   
-  /* Art Deco card styles */
+  /* Enhanced Art Deco card styles */
   .card-luxury {
     @apply bg-card/90 backdrop-blur-sm border border-border/50 rounded-sm;
-    @apply shadow-lg hover:shadow-xl transition-all duration-300;
+    @apply shadow-lg hover:shadow-xl transition-all duration-500;
+    @apply hover:scale-[1.02] hover:border-brass/30;
+    position: relative;
   }
   
-  /* Premium text styles */
+  .card-luxury::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    background: var(--gradient-brass);
+    border-radius: inherit;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .card-luxury:hover::before {
+    opacity: 0.1;
+  }
+  
+  /* Enhanced text styles with better hierarchy */
   .text-hero {
-    @apply font-display text-5xl md:text-7xl font-bold leading-tight;
+    @apply font-display text-4xl md:text-6xl lg:text-7xl font-bold leading-tight;
     background: var(--gradient-brass);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    text-shadow: 0 0 30px hsl(var(--brass) / 0.3);
   }
   
   .text-display {
-    @apply font-display text-3xl md:text-4xl font-semibold text-porcelain;
+    @apply font-display text-2xl md:text-3xl lg:text-4xl font-semibold text-porcelain;
+    line-height: 1.2;
   }
   
   .text-body-large {
     @apply font-body text-lg md:text-xl leading-relaxed text-muted-foreground;
+    max-width: 65ch;
+  }
+  
+  .text-body {
+    @apply font-body text-base leading-relaxed text-foreground;
+    max-width: 65ch;
+  }
+  
+  .text-small {
+    @apply font-body text-sm text-muted-foreground;
+  }
+  
+  /* Interactive elements with micro-animations */
+  .interactive-hover {
+    @apply transition-all duration-300 ease-out;
+    @apply hover:scale-105 hover:-translate-y-1;
+  }
+  
+  .link-underline {
+    @apply relative inline-block;
+  }
+  
+  .link-underline::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background: var(--gradient-brass);
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease-out;
+  }
+  
+  .link-underline:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+  }
+  
+  /* Form enhancements */
+  .input-luxury {
+    @apply bg-input/50 border border-border backdrop-blur-sm rounded-sm px-4 py-3;
+    @apply text-foreground placeholder:text-muted-foreground;
+    @apply focus:border-brass focus:ring-2 focus:ring-brass/20 focus:outline-none;
+    @apply transition-all duration-300;
+  }
+  
+  .input-luxury:focus {
+    box-shadow: 0 0 0 1px hsl(var(--brass)), 0 0 20px hsl(var(--brass) / 0.1);
+  }
+  
+  /* Loading states */
+  .loading-shimmer {
+    background: linear-gradient(90deg, 
+      hsl(var(--muted)) 25%, 
+      hsl(var(--muted-foreground) / 0.1) 50%, 
+      hsl(var(--muted)) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+  
+  /* Scroll indicators and progress */
+  .scroll-indicator {
+    @apply w-6 h-10 border-2 border-brass/50 rounded-full flex justify-center;
+    @apply animate-pulse-brass;
+  }
+  
+  .scroll-indicator::after {
+    content: '';
+    @apply w-1 h-3 bg-brass rounded-full mt-2 animate-float;
   }
 }

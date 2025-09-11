@@ -25,12 +25,12 @@ const Navigation = () => {
           <div className="flex-shrink-0">
             <NavLink 
               to="/" 
-              className="flex items-center hover:opacity-80 transition-opacity"
+              className="flex items-center hover:opacity-80 transition-all duration-300 hover:scale-105"
             >
               <img 
                 src="/lovable-uploads/b046a3c5-1c1b-45b4-bec5-34fe783f8f54.png" 
                 alt="Andreas & Co. Grooming Lounge"
-                className="h-12 w-12 md:h-14 md:w-14"
+                className="h-12 w-12 md:h-14 md:w-14 transition-transform duration-300"
               />
             </NavLink>
           </div>
@@ -42,10 +42,10 @@ const Navigation = () => {
                 key={link.name}
                 to={link.href}
                 className={({ isActive }) =>
-                  `font-medium transition-colors duration-200 ${
+                  `font-medium transition-all duration-300 link-underline hover:text-brass ${
                     isActive 
-                      ? 'text-brass border-b-2 border-brass' 
-                      : 'text-porcelain hover:text-brass'
+                      ? 'text-brass' 
+                      : 'text-porcelain'
                   }`
                 }
               >
@@ -59,18 +59,18 @@ const Navigation = () => {
             <Button 
               variant="outline" 
               size="sm"
-              className="btn-outline-brass"
+              className="btn-outline-brass group"
               onClick={() => window.open('tel:+1234567890')}
             >
-              <Phone className="w-4 h-4 mr-2" />
+              <Phone className="w-4 h-4 mr-2 group-hover:animate-pulse" />
               Call
             </Button>
             <Button 
-              className="btn-brass"
+              className="btn-brass group"
               onClick={() => window.location.href = '/book'}
             >
-              <Calendar className="w-4 h-4 mr-2" />
-              Book Now
+              <Calendar className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+              <span className="group-hover:animate-pulse">Book Now</span>
             </Button>
           </div>
 

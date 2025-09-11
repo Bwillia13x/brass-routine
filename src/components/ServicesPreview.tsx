@@ -51,7 +51,7 @@ const ServicesPreview = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-16 animate-fade-in">
           <h2 className="text-display mb-6">
             Calibre · Concierge · Regimen · Members First
           </h2>
@@ -64,13 +64,17 @@ const ServicesPreview = () => {
         {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {services.map((service, index) => (
-            <div key={index} className="card-luxury p-6 luxury-hover group">
+            <div 
+              key={index} 
+              className="card-luxury p-6 luxury-hover group animate-slide-up"
+              style={{ animationDelay: `${index * 0.2}s` }}
+            >
               <div className="flex items-center space-x-4 mb-4">
-                <div className="w-12 h-12 bg-gradient-brass rounded-sm flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <service.icon className="w-6 h-6 text-coal" />
+                <div className="w-12 h-12 bg-gradient-brass rounded-sm flex items-center justify-center group-hover:scale-110 group-hover:animate-pulse-brass transition-all duration-300">
+                  <service.icon className="w-6 h-6 text-coal group-hover:scale-110 transition-transform" />
                 </div>
                 <div>
-                  <h3 className="font-display text-xl font-semibold text-porcelain">
+                  <h3 className="font-display text-xl font-semibold text-porcelain group-hover:text-brass transition-colors">
                     {service.title}
                   </h3>
                   <p className="text-steel text-sm">{service.duration}</p>
@@ -84,22 +88,22 @@ const ServicesPreview = () => {
               <ul className="space-y-2 mb-6">
                 {service.includes.map((item, idx) => (
                   <li key={idx} className="flex items-center space-x-2 text-sm text-porcelain">
-                    <div className="w-1.5 h-1.5 bg-brass rounded-full"></div>
+                    <div className="w-1.5 h-1.5 bg-brass rounded-full group-hover:animate-pulse"></div>
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
               
               <div className="flex justify-between items-center">
-                <span className="font-display text-lg font-semibold text-brass">
+                <span className="font-display text-lg font-semibold text-brass group-hover:animate-pulse">
                   {service.price}
                 </span>
                 <Button 
                   size="sm" 
-                  className="btn-brass"
+                  className="btn-brass group/btn"
                   onClick={() => window.location.href = `/book?service=${service.title.toLowerCase()}`}
                 >
-                  Book
+                  <span className="group-hover/btn:animate-pulse">Book</span>
                 </Button>
               </div>
             </div>
@@ -144,12 +148,12 @@ const ServicesPreview = () => {
               </div>
             </div>
             
-            <div className="flex space-x-4">
-              <Button className="btn-brass">
-                Reserve Now
+            <div className="flex space-x-4 animate-scale-in [animation-delay:0.8s]">
+              <Button className="btn-brass group">
+                <span className="group-hover:animate-pulse">Reserve Now</span>
               </Button>
-              <Button variant="outline" className="btn-outline-brass">
-                Learn More
+              <Button variant="outline" className="btn-outline-brass group">
+                <span className="group-hover:animate-pulse">Learn More</span>
               </Button>
             </div>
           </div>
