@@ -30,6 +30,15 @@ const Hero = () => {
       <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="deco-frame max-w-4xl mx-auto">
           
+          {/* Main Logo */}
+          <div className="mb-8">
+            <img 
+              src="/lovable-uploads/b046a3c5-1c1b-45b4-bec5-34fe783f8f54.png" 
+              alt="Andreas & Co. Grooming Lounge"
+              className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 mx-auto mb-6"
+            />
+          </div>
+          
           {/* Main Headline */}
           <h1 className="text-hero mb-6">
             Measured. Mastered. Yours.
