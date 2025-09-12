@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Menu, X, Phone, Calendar } from 'lucide-react';
 import { Button } from './ui/button';
-import andreasLogoClean from '@/assets/andreas-logo-clean.png';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,7 +28,7 @@ const Navigation = () => {
               className="flex items-center hover:opacity-80 transition-all duration-300 hover:scale-105"
             >
               <img 
-                src={andreasLogoClean} 
+                src="/lovable-uploads/b046a3c5-1c1b-45b4-bec5-34fe783f8f54.png" 
                 alt="Andreas & Co. Grooming Lounge"
                 className="h-12 w-12 md:h-14 md:w-14 transition-transform duration-300"
               />

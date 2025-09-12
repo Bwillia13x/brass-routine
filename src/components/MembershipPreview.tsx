@@ -1,7 +1,5 @@
 import { Check, Crown, Star, Gift } from 'lucide-react';
 import { Button } from './ui/button';
-import loungeAmbiance from '@/assets/lounge-ambiance.png';
-import andreasLogoClean from '@/assets/andreas-logo-clean.png';
 
 const MembershipPreview = () => {
   const memberships = [
@@ -43,28 +41,11 @@ const MembershipPreview = () => {
   ];
 
   return (
-    <section className="py-20 bg-ny-green/5 relative overflow-hidden">
-      {/* Luxury Lounge Background */}
-      <div className="absolute inset-0 opacity-10">
-        <img 
-          src={loungeAmbiance} 
-          alt="" 
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent"></div>
-      </div>
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <section className="py-20 bg-ny-green/5">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="text-center mb-16 animate-fade-in">
-          <div className="flex justify-center mb-6">
-            <img 
-              src={andreasLogoClean} 
-              alt="Andreas & Co. member benefits" 
-              className="w-12 h-12 opacity-60"
-            />
-          </div>
           <h2 className="text-display mb-6">
             Look Sharp, Always
           </h2>
