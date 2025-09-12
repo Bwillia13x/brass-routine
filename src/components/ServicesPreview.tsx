@@ -1,6 +1,9 @@
 import { Scissors, Sparkles, HandHeart, Zap, Users } from 'lucide-react';
 import { Button } from './ui/button';
 import groomingToolsImage from '@/assets/grooming-tools.jpg';
+import groomingToolsGold from '@/assets/grooming-tools-gold.png';
+import skincareProducts from '@/assets/skincare-products.png';
+import artDecoPattern from '@/assets/art-deco-pattern.png';
 
 const ServicesPreview = () => {
   const services = [
@@ -47,11 +50,27 @@ const ServicesPreview = () => {
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-b from-background to-ny-green/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 bg-gradient-to-b from-background to-ny-green/10 relative overflow-hidden">
+      {/* Art Deco Background Pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <img 
+          src={artDecoPattern} 
+          alt="" 
+          className="w-full h-full object-cover"
+        />
+      </div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
         <div className="text-center mb-16 animate-fade-in">
+          <div className="flex justify-center mb-6">
+            <img 
+              src={groomingToolsGold} 
+              alt="Premium grooming tools" 
+              className="w-16 h-16 opacity-80"
+            />
+          </div>
           <h2 className="text-display mb-6">
             Calibre · Concierge · Regimen · Members First
           </h2>
@@ -114,8 +133,8 @@ const ServicesPreview = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
             <img
-              src={groomingToolsImage}
-              alt="Premium grooming tools and brass instruments"
+              src={skincareProducts}
+              alt="Premium skincare and grooming products"
               className="w-full rounded-sm shadow-luxury"
             />
           </div>

@@ -1,6 +1,8 @@
 import { Calendar, ArrowRight, Check } from 'lucide-react';
 import { Button } from './ui/button';
 import heroLoungeImage from '@/assets/hero-lounge.jpg';
+import andreasLogoClean from '@/assets/andreas-logo-clean.png';
+import artDecoAccent from '@/assets/art-deco-accent.png';
 
 const Hero = () => {
   const calibreMarkers = [
@@ -22,8 +24,13 @@ const Hero = () => {
       </div>
 
       {/* Art Deco Pattern Overlay */}
-      <div className="absolute inset-0 z-10 opacity-10">
-        <div className="w-full h-full bg-gradient-to-br from-brass/20 via-transparent to-ny-green/20"></div>
+      <div className="absolute inset-0 z-10 opacity-15">
+        <img 
+          src={artDecoAccent} 
+          alt="" 
+          className="w-full h-full object-cover mix-blend-overlay"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-brass/20 via-transparent to-ny-green/20"></div>
       </div>
 
       {/* Hero Content */}
@@ -33,7 +40,7 @@ const Hero = () => {
           {/* Main Logo */}
           <div className="mb-8 animate-fade-in">
             <img 
-              src="/lovable-uploads/b046a3c5-1c1b-45b4-bec5-34fe783f8f54.png" 
+              src={andreasLogoClean} 
               alt="Andreas & Co. Grooming Lounge"
               className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 mx-auto mb-6 hover:scale-110 transition-transform duration-500"
             />
