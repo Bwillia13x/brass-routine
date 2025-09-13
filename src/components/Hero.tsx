@@ -35,37 +35,39 @@ const Hero = () => {
             <img 
               src="/lovable-uploads/b046a3c5-1c1b-45b4-bec5-34fe783f8f54.png" 
               alt="Andreas & Co. Grooming Lounge"
-              className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 mx-auto mb-6 hover:scale-110 transition-transform duration-500"
+              className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 mx-auto mb-6 magnetic-hover glow-on-hover"
             />
           </div>
           
           {/* Main Headline */}
           <h1 className="text-hero mb-6 animate-slide-up">
-            Measured. Mastered. Yours.
+            <span className="text-reveal [animation-delay:0.2s]">Measured.</span>{' '}
+            <span className="text-reveal [animation-delay:0.4s]">Mastered.</span>{' '}
+            <span className="text-reveal [animation-delay:0.6s]">Yours.</span>
           </h1>
           
           {/* Subheadline */}
-          <p className="text-body-large max-w-3xl mx-auto mb-8 animate-fade-in [animation-delay:0.3s]">
+          <p className="text-body-large max-w-3xl mx-auto mb-8 animate-fade-in [animation-delay:0.8s]">
             New-York calibre, Calgary address. Precision cuts, SkinBar facials, 
             and a finish ritual you can repeat at home.
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-scale-in [animation-delay:0.6s]">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-scale-in [animation-delay:1s]">
             <Button 
-              className="btn-brass text-lg px-10 py-6 group"
+              className="btn-brass text-lg px-10 py-6 group animate-slide-in-left [animation-delay:1.2s] magnetic-hover"
               onClick={() => window.location.href = '/book'}
             >
-              <Calendar className="w-5 h-5 mr-3 group-hover:scale-110 transition-transform" />
+              <Calendar className="w-5 h-5 mr-3 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300" />
               Book in Two Taps
             </Button>
             <Button 
               variant="outline" 
-              className="btn-outline-brass text-lg px-10 py-6 group"
+              className="btn-outline-brass text-lg px-10 py-6 group animate-slide-in-right [animation-delay:1.4s] magnetic-hover"
               onClick={() => window.location.href = '/services'}
             >
               Explore Services
-              <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-2 group-hover:scale-110 transition-all duration-300" />
             </Button>
           </div>
 
@@ -74,20 +76,20 @@ const Hero = () => {
             {calibreMarkers.map((marker, index) => (
               <div 
                 key={index} 
-                className="flex items-center justify-center space-x-3 animate-fade-in interactive-hover group"
-                style={{ animationDelay: `${0.8 + index * 0.1}s` }}
+                className="flex items-center justify-center space-x-3 animate-fade-in interactive-hover group magnetic-hover"
+                style={{ animationDelay: `${1.6 + index * 0.2}s` }}
               >
-                <div className="w-8 h-8 rounded-full bg-gradient-brass flex items-center justify-center flex-shrink-0 group-hover:animate-pulse-brass">
-                  <marker.icon className="w-4 h-4 text-coal group-hover:scale-110 transition-transform" />
+                <div className="w-8 h-8 rounded-full bg-gradient-brass flex items-center justify-center flex-shrink-0 group-hover:animate-elastic">
+                  <marker.icon className="w-4 h-4 text-coal group-hover:scale-110 transition-transform duration-300" />
                 </div>
-                <span className="font-medium text-porcelain group-hover:text-brass transition-colors">{marker.text}</span>
+                <span className="font-medium text-porcelain group-hover:text-brass transition-all duration-300 group-hover:tracking-wide">{marker.text}</span>
               </div>
             ))}
           </div>
 
           {/* Premium Badge */}
-          <div className="mt-12 inline-flex items-center space-x-2 px-6 py-3 bg-ny-green/80 border border-brass/30 rounded-sm backdrop-blur-sm">
-            <div className="w-6 h-6 rounded-full bg-gradient-brass flex items-center justify-center">
+          <div className="mt-12 inline-flex items-center space-x-2 px-6 py-3 bg-ny-green/80 border border-brass/30 rounded-sm backdrop-blur-sm animate-float [animation-delay:2.2s] glow-on-hover">
+            <div className="w-6 h-6 rounded-full bg-gradient-brass flex items-center justify-center animate-rotate-in [animation-delay:2.4s]">
               <span className="font-display font-bold text-coal text-xs">A&Co</span>
             </div>
             <span className="text-brass font-medium">Calgary's Premier Grooming Lounge</span>

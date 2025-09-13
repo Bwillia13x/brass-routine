@@ -239,6 +239,10 @@
     @apply hover:scale-105 hover:-translate-y-1;
   }
   
+  .interactive-hover:hover {
+    filter: drop-shadow(0 10px 30px hsl(var(--brass) / 0.2));
+  }
+  
   .link-underline {
     @apply relative inline-block;
   }
@@ -253,12 +257,48 @@
     background: var(--gradient-brass);
     transform: scaleX(0);
     transform-origin: bottom right;
-    transition: transform 0.3s ease-out;
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
   
   .link-underline:hover::after {
     transform: scaleX(1);
     transform-origin: bottom left;
+  }
+  
+  /* Magnetic hover effect for interactive elements */
+  .magnetic-hover {
+    transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    cursor: pointer;
+  }
+  
+  .magnetic-hover:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Smooth text reveal animation */
+  .text-reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: reveal 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  }
+  
+  @keyframes reveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Enhanced glow effects */
+  .glow-on-hover {
+    transition: all 0.3s ease;
+  }
+  
+  .glow-on-hover:hover {
+    box-shadow: 
+      0 0 20px hsl(var(--brass) / 0.3),
+      0 0 40px hsl(var(--brass) / 0.2),
+      0 0 60px hsl(var(--brass) / 0.1);
   }
   
   /* Form enhancements */

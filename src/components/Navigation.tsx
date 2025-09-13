@@ -25,31 +25,32 @@ const Navigation = () => {
           <div className="flex-shrink-0">
             <NavLink 
               to="/" 
-              className="flex items-center hover:opacity-80 transition-all duration-300 hover:scale-105"
+              className="flex items-center hover:opacity-80 transition-all duration-300 magnetic-hover group"
             >
               <img 
                 src="/lovable-uploads/b046a3c5-1c1b-45b4-bec5-34fe783f8f54.png" 
                 alt="Andreas & Co. Grooming Lounge"
-                className="h-12 w-12 md:h-14 md:w-14 transition-transform duration-300"
+                className="h-12 w-12 md:h-14 md:w-14 transition-all duration-300 group-hover:drop-shadow-[0_0_15px_rgba(199,164,90,0.4)]"
               />
             </NavLink>
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
-            {navLinks.map((link) => (
+            {navLinks.map((link, index) => (
               <NavLink
                 key={link.name}
                 to={link.href}
                 className={({ isActive }) =>
-                  `font-medium transition-all duration-300 link-underline hover:text-brass ${
+                  `font-medium transition-all duration-300 link-underline hover:text-brass relative group animate-fade-in ${
                     isActive 
                       ? 'text-brass' 
                       : 'text-porcelain'
                   }`
                 }
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
-                {link.name}
+                <span className="group-hover:tracking-wide transition-all duration-300">{link.name}</span>
               </NavLink>
             ))}
           </div>
@@ -59,18 +60,18 @@ const Navigation = () => {
             <Button 
               variant="outline" 
               size="sm"
-              className="btn-outline-brass group"
+              className="btn-outline-brass group magnetic-hover animate-slide-in-left [animation-delay:0.8s]"
               onClick={() => window.open('tel:+1234567890')}
             >
-              <Phone className="w-4 h-4 mr-2 group-hover:animate-pulse" />
-              Call
+              <Phone className="w-4 h-4 mr-2 group-hover:animate-bounce-subtle group-hover:rotate-12 transition-all duration-300" />
+              <span className="group-hover:tracking-wide transition-all duration-300">Call</span>
             </Button>
             <Button 
-              className="btn-brass group"
+              className="btn-brass group magnetic-hover animate-slide-in-right [animation-delay:1s]"
               onClick={() => window.location.href = '/book'}
             >
-              <Calendar className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
-              <span className="group-hover:animate-pulse">Book Now</span>
+              <Calendar className="w-4 h-4 mr-2 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300" />
+              <span className="group-hover:tracking-wide transition-all duration-300">Book Now</span>
             </Button>
           </div>
 
