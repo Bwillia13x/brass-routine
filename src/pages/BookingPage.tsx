@@ -1,8 +1,86 @@
+import { useState } from 'react';
 import { Calendar, Clock, User, Phone, Mail, CreditCard } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import { toast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 import Layout from '../components/Layout';
 
 const BookingPage = () => {
+  const { user } = useAuth();
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    phone: '',
+    email: user?.email || '',
+    service: '',
+    membershipStatus: 'none',
+    preferredDateTime: '',
+  });
+  const [loading, setLoading] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!user) {
+      toast({
+        title: "Please sign in",
+        description: "You need to be signed in to book an appointment.",
+        variant: "destructive",
+      });
+      window.location.href = '/auth';
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const { error } = await supabase
+        .from('appointments')
+        .insert({
+          user_id: user.id,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          service: formData.service,
+          membership_status: formData.membershipStatus,
+          preferred_datetime: formData.preferredDateTime,
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Appointment Requested!",
+        description: "We'll contact you within 24 hours to confirm your appointment.",
+      });
+
+      // Reset form
+      setFormData({
+        firstName: '',
+        lastName: '',
+        phone: '',
+        email: user?.email || '',
+        service: '',
+        membershipStatus: 'none',
+        preferredDateTime: '',
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "There was an error submitting your appointment request. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Layout>
       <div className="pt-12 pb-20">
@@ -132,7 +210,7 @@ const BookingPage = () => {
               Request an Appointment
             </h3>
             
-            <form className="max-w-2xl mx-auto space-y-6">
+            <form onSubmit={handleSubmit} className="max-w-2xl mx-auto space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-porcelain font-medium mb-2">
@@ -140,7 +218,10 @@ const BookingPage = () => {
                   </label>
                   <input
                     type="text"
+                    name="firstName"
                     required
+                    value={formData.firstName}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-3 bg-ny-green border border-brass/30 rounded-sm text-porcelain placeholder-steel focus:ring-2 focus:ring-brass focus:border-transparent transition-all"
                     placeholder="Your first name"
                   />
@@ -151,7 +232,10 @@ const BookingPage = () => {
                   </label>
                   <input
                     type="text"
+                    name="lastName"
                     required
+                    value={formData.lastName}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-3 bg-ny-green border border-brass/30 rounded-sm text-porcelain placeholder-steel focus:ring-2 focus:ring-brass focus:border-transparent transition-all"
                     placeholder="Your last name"
                   />
@@ -165,7 +249,10 @@ const BookingPage = () => {
                   </label>
                   <input
                     type="tel"
+                    name="phone"
                     required
+                    value={formData.phone}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-3 bg-ny-green border border-brass/30 rounded-sm text-porcelain placeholder-steel focus:ring-2 focus:ring-brass focus:border-transparent transition-all"
                     placeholder="(123) 456-7890"
                   />
@@ -176,7 +263,10 @@ const BookingPage = () => {
                   </label>
                   <input
                     type="email"
+                    name="email"
                     required
+                    value={formData.email}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-3 bg-ny-green border border-brass/30 rounded-sm text-porcelain placeholder-steel focus:ring-2 focus:ring-brass focus:border-transparent transition-all"
                     placeholder="your.email@example.com"
                   />
@@ -188,7 +278,12 @@ const BookingPage = () => {
                   <label className="block text-porcelain font-medium mb-2">
                     Preferred Service
                   </label>
-                  <select className="w-full px-4 py-3 bg-ny-green border border-brass/30 rounded-sm text-porcelain focus:ring-2 focus:ring-brass focus:border-transparent transition-all">
+                  <select 
+                    name="service"
+                    value={formData.service}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-ny-green border border-brass/30 rounded-sm text-porcelain focus:ring-2 focus:ring-brass focus:border-transparent transition-all"
+                  >
                     <option value="">Select a service</option>
                     <option value="signature-cut">Signature Cut</option>
                     <option value="cut-style-premium">Cut & Style Premium</option>
@@ -204,7 +299,12 @@ const BookingPage = () => {
                   <label className="block text-porcelain font-medium mb-2">
                     Membership Status
                   </label>
-                  <select className="w-full px-4 py-3 bg-ny-green border border-brass/30 rounded-sm text-porcelain focus:ring-2 focus:ring-brass focus:border-transparent transition-all">
+                  <select 
+                    name="membershipStatus"
+                    value={formData.membershipStatus}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-ny-green border border-brass/30 rounded-sm text-porcelain focus:ring-2 focus:ring-brass focus:border-transparent transition-all"
+                  >
                     <option value="none">Not a Member</option>
                     <option value="classic">Classic Member</option>
                     <option value="reserve">Reserve Member</option>
@@ -218,16 +318,19 @@ const BookingPage = () => {
                   Preferred Date & Time
                 </label>
                 <textarea
+                  name="preferredDateTime"
                   rows={3}
+                  value={formData.preferredDateTime}
+                  onChange={handleInputChange}
                   className="w-full px-4 py-3 bg-ny-green border border-brass/30 rounded-sm text-porcelain placeholder-steel focus:ring-2 focus:ring-brass focus:border-transparent transition-all resize-none"
                   placeholder="Let us know your preferred dates, times, and any special requests..."
                 ></textarea>
               </div>
 
               <div className="text-center">
-                <Button type="submit" className="btn-brass text-lg px-12 py-4">
+                <Button type="submit" className="btn-brass text-lg px-12 py-4" disabled={loading}>
                   <CreditCard className="w-5 h-5 mr-2" />
-                  Request Appointment
+                  {loading ? 'Submitting...' : 'Request Appointment'}
                 </Button>
                 <p className="text-steel text-sm mt-3">
                   We'll contact you within 24 hours to confirm your appointment.

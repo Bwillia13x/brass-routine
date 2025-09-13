@@ -1,8 +1,69 @@
+import { useState } from 'react';
 import { MapPin, Phone, Clock, Mail, Navigation } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import { toast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import Layout from '../components/Layout';
 
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    subject: '',
+    message: '',
+  });
+  const [loading, setLoading] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const { error } = await supabase
+        .from('contact_messages')
+        .insert({
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          subject: formData.subject,
+          message: formData.message,
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Message Sent!",
+        description: "Thank you for contacting us. We'll get back to you soon.",
+      });
+
+      // Reset form
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        subject: '',
+        message: '',
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "There was an error sending your message. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Layout>
       <div className="pt-12 pb-20">
@@ -120,7 +181,7 @@ const Contact = () => {
                 Send us a Message
               </h2>
               
-              <form className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-porcelain font-medium mb-2">
@@ -128,6 +189,10 @@ const Contact = () => {
                     </label>
                     <input
                       type="text"
+                      name="firstName"
+                      required
+                      value={formData.firstName}
+                      onChange={handleInputChange}
                       className="w-full px-4 py-3 bg-ny-green border border-brass/30 rounded-sm text-porcelain placeholder-steel focus:ring-2 focus:ring-brass focus:border-transparent transition-all"
                       placeholder="Your first name"
                     />
@@ -138,6 +203,10 @@ const Contact = () => {
                     </label>
                     <input
                       type="text"
+                      name="lastName"
+                      required
+                      value={formData.lastName}
+                      onChange={handleInputChange}
                       className="w-full px-4 py-3 bg-ny-green border border-brass/30 rounded-sm text-porcelain placeholder-steel focus:ring-2 focus:ring-brass focus:border-transparent transition-all"
                       placeholder="Your last name"
                     />
@@ -150,6 +219,10 @@ const Contact = () => {
                   </label>
                   <input
                     type="email"
+                    name="email"
+                    required
+                    value={formData.email}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-3 bg-ny-green border border-brass/30 rounded-sm text-porcelain placeholder-steel focus:ring-2 focus:ring-brass focus:border-transparent transition-all"
                     placeholder="your.email@example.com"
                   />
@@ -161,6 +234,9 @@ const Contact = () => {
                   </label>
                   <input
                     type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-3 bg-ny-green border border-brass/30 rounded-sm text-porcelain placeholder-steel focus:ring-2 focus:ring-brass focus:border-transparent transition-all"
                     placeholder="(123) 456-7890"
                   />
@@ -170,7 +246,13 @@ const Contact = () => {
                   <label className="block text-porcelain font-medium mb-2">
                     Subject
                   </label>
-                  <select className="w-full px-4 py-3 bg-ny-green border border-brass/30 rounded-sm text-porcelain focus:ring-2 focus:ring-brass focus:border-transparent transition-all">
+                  <select 
+                    name="subject"
+                    required
+                    value={formData.subject}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-ny-green border border-brass/30 rounded-sm text-porcelain focus:ring-2 focus:ring-brass focus:border-transparent transition-all"
+                  >
                     <option value="">Select a subject</option>
                     <option value="booking">Booking Question</option>
                     <option value="membership">Membership Inquiry</option>
@@ -185,14 +267,18 @@ const Contact = () => {
                     Message
                   </label>
                   <textarea
+                    name="message"
                     rows={4}
+                    required
+                    value={formData.message}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-3 bg-ny-green border border-brass/30 rounded-sm text-porcelain placeholder-steel focus:ring-2 focus:ring-brass focus:border-transparent transition-all resize-none"
                     placeholder="Tell us how we can help you..."
                   ></textarea>
                 </div>
 
-                <Button type="submit" className="btn-brass w-full">
-                  Send Message
+                <Button type="submit" className="btn-brass w-full" disabled={loading}>
+                  {loading ? 'Sending...' : 'Send Message'}
                 </Button>
               </form>
             </div>

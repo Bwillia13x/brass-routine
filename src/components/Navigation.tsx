@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Menu, X, Phone, Calendar } from 'lucide-react';
+import { Menu, X, Phone, Calendar, User, LogOut } from 'lucide-react';
 import { Button } from './ui/button';
+import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/hooks/useProfile';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, signOut } = useAuth();
+  const { profile } = useProfile();
 
   const navLinks = [
     { name: 'Home', href: '/' },
@@ -66,13 +70,49 @@ const Navigation = () => {
               <Phone className="w-4 h-4 mr-2 group-hover:animate-bounce-subtle group-hover:rotate-12 transition-all duration-300" />
               <span className="group-hover:tracking-wide transition-all duration-300">Call</span>
             </Button>
-            <Button 
-              className="btn-brass group magnetic-hover animate-slide-in-right [animation-delay:1s]"
-              onClick={() => window.location.href = '/book'}
-            >
-              <Calendar className="w-4 h-4 mr-2 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300" />
-              <span className="group-hover:tracking-wide transition-all duration-300">Book Now</span>
-            </Button>
+            
+            {user ? (
+              <>
+                <span className="text-porcelain text-sm">
+                  Welcome, {profile?.first_name || user.email?.split('@')[0]}
+                </span>
+                <Button 
+                  variant="outline"
+                  size="sm"
+                  className="btn-outline-brass group"
+                  onClick={signOut}
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sign Out
+                </Button>
+                <Button 
+                  className="btn-brass group magnetic-hover animate-slide-in-right [animation-delay:1s]"
+                  onClick={() => window.location.href = '/book'}
+                >
+                  <Calendar className="w-4 h-4 mr-2 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300" />
+                  <span className="group-hover:tracking-wide transition-all duration-300">Book Now</span>
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button 
+                  variant="outline"
+                  size="sm"
+                  className="btn-outline-brass group"
+                  onClick={() => window.location.href = '/auth'}
+                >
+                  <User className="w-4 h-4 mr-2" />
+                  Sign In
+                </Button>
+                <Button 
+                  className="btn-brass group magnetic-hover animate-slide-in-right [animation-delay:1s]"
+                  onClick={() => window.location.href = '/auth'}
+                >
+                  <Calendar className="w-4 h-4 mr-2 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300" />
+                  <span className="group-hover:tracking-wide transition-all duration-300">Book Now</span>
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -116,13 +156,47 @@ const Navigation = () => {
                 <Phone className="w-4 h-4 mr-2" />
                 Call Us
               </Button>
-              <Button 
-                className="btn-brass w-full"
-                onClick={() => window.location.href = '/book'}
-              >
-                <Calendar className="w-4 h-4 mr-2" />
-                Book Now
-              </Button>
+              
+              {user ? (
+                <>
+                  <div className="text-porcelain text-sm text-center">
+                    Welcome, {profile?.first_name || user.email?.split('@')[0]}
+                  </div>
+                  <Button 
+                    variant="outline"
+                    className="btn-outline-brass w-full"
+                    onClick={signOut}
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </Button>
+                  <Button 
+                    className="btn-brass w-full"
+                    onClick={() => window.location.href = '/book'}
+                  >
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Book Now
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button 
+                    variant="outline"
+                    className="btn-outline-brass w-full"
+                    onClick={() => window.location.href = '/auth'}
+                  >
+                    <User className="w-4 h-4 mr-2" />
+                    Sign In
+                  </Button>
+                  <Button 
+                    className="btn-brass w-full"
+                    onClick={() => window.location.href = '/auth'}
+                  >
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Sign Up & Book
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
