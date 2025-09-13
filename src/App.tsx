@@ -12,33 +12,43 @@ import BookingPage from "./pages/BookingPage";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+// Create QueryClient outside component to prevent recreation on every render
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
-const App: React.FC = () => {
+function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/membership" element={<Membership />} />
-            <Route path="/reserve" element={<Membership />} />
-            <Route path="/skinbar" element={<Services />} />
-            <Route path="/wedding" element={<Services />} />
-            <Route path="/about" element={<Index />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/book" element={<BookingPage />} />
-            <Route path="/auth" element={<Auth />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <React.Fragment>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/services" element={<Services />} />
+              <Route path="/membership" element={<Membership />} />
+              <Route path="/reserve" element={<Membership />} />
+              <Route path="/skinbar" element={<Services />} />
+              <Route path="/wedding" element={<Services />} />
+              <Route path="/about" element={<Index />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/book" element={<BookingPage />} />
+              <Route path="/auth" element={<Auth />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </React.Fragment>
   );
-};
+}
 
 export default App;
