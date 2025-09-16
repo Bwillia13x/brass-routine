@@ -10,6 +10,9 @@ import Membership from "./pages/Membership";
 import Contact from "./pages/Contact";
 import BookingPage from "./pages/BookingPage";
 import Auth from "./pages/Auth";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
+import Cancellation from "./pages/Cancellation";
 import NotFound from "./pages/NotFound";
 
 // Create QueryClient outside component to prevent recreation on every render
@@ -41,6 +44,9 @@ function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/book" element={<BookingPage />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/cancellation" element={<Cancellation />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
