@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { Menu, X, Phone, Calendar, User, LogOut } from 'lucide-react';
 import { Button } from './ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -9,6 +9,7 @@ const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user, signOut } = useAuth();
   const { profile } = useProfile();
+  const navigate = useNavigate();
 
   const navLinks = [
     { name: 'Home', href: '/' },
@@ -87,7 +88,7 @@ const Navigation = () => {
                 </Button>
                 <Button 
                   className="btn-brass group magnetic-hover animate-slide-in-right [animation-delay:1s]"
-                  onClick={() => window.location.href = '/book'}
+                  onClick={() => navigate('/book')}
                 >
                   <Calendar className="w-4 h-4 mr-2 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300" />
                   <span className="group-hover:tracking-wide transition-all duration-300">Book Now</span>
@@ -99,14 +100,14 @@ const Navigation = () => {
                   variant="outline"
                   size="sm"
                   className="btn-outline-brass group"
-                  onClick={() => window.location.href = '/auth'}
+                  onClick={() => navigate('/auth')}
                 >
                   <User className="w-4 h-4 mr-2" />
                   Sign In
                 </Button>
                 <Button 
                   className="btn-brass group magnetic-hover animate-slide-in-right [animation-delay:1s]"
-                  onClick={() => window.location.href = '/auth'}
+                  onClick={() => navigate('/auth')}
                 >
                   <Calendar className="w-4 h-4 mr-2 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300" />
                   <span className="group-hover:tracking-wide transition-all duration-300">Book Now</span>
@@ -172,7 +173,7 @@ const Navigation = () => {
                   </Button>
                   <Button 
                     className="btn-brass w-full"
-                    onClick={() => window.location.href = '/book'}
+                    onClick={() => navigate('/book')}
                   >
                     <Calendar className="w-4 h-4 mr-2" />
                     Book Now
@@ -183,14 +184,14 @@ const Navigation = () => {
                   <Button 
                     variant="outline"
                     className="btn-outline-brass w-full"
-                    onClick={() => window.location.href = '/auth'}
+                    onClick={() => navigate('/auth')}
                   >
                     <User className="w-4 h-4 mr-2" />
                     Sign In
                   </Button>
                   <Button 
                     className="btn-brass w-full"
-                    onClick={() => window.location.href = '/auth'}
+                    onClick={() => navigate('/auth')}
                   >
                     <Calendar className="w-4 h-4 mr-2" />
                     Sign Up & Book

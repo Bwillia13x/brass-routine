@@ -1,8 +1,10 @@
 import { Calendar, ArrowRight, Check } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import heroLoungeImage from '@/assets/hero-lounge.jpg';
 
 const Hero = () => {
+  const navigate = useNavigate();
   const calibreMarkers = [
     { icon: Check, text: 'Expert Consultation' },
     { icon: Check, text: 'Signature Finish Ritual' },
@@ -56,7 +58,7 @@ const Hero = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-scale-in [animation-delay:1s]">
             <Button 
               className="btn-brass text-lg px-10 py-6 group animate-slide-in-left [animation-delay:1.2s] magnetic-hover"
-              onClick={() => window.location.href = '/book'}
+              onClick={() => navigate('/book')}
             >
               <Calendar className="w-5 h-5 mr-3 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300" />
               Book in Two Taps
@@ -64,7 +66,7 @@ const Hero = () => {
             <Button 
               variant="outline" 
               className="btn-outline-brass text-lg px-10 py-6 group animate-slide-in-right [animation-delay:1.4s] magnetic-hover"
-              onClick={() => window.location.href = '/services'}
+              onClick={() => navigate('/services')}
             >
               Explore Services
               <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-2 group-hover:scale-110 transition-all duration-300" />
