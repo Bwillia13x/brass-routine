@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase, isSupabaseConfigured } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
 import { Mail, Lock, User, Phone } from 'lucide-react';
 import Layout from '@/components/Layout';
+import { siteConfig } from '@/lib/site-config';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -17,6 +18,10 @@ const Auth = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!isSupabaseConfigured) {
+      return;
+    }
+
     // Check if user is already logged in
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -29,6 +34,16 @@ const Auth = () => {
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!isSupabaseConfigured) {
+      toast({
+        title: 'Account portal offline',
+        description: `Online sign-in is temporarily unavailable. Please contact ${siteConfig.contact.email} for assistance.`,
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -88,6 +103,34 @@ const Auth = () => {
       setLoading(false);
     }
   };
+
+  if (!isSupabaseConfigured) {
+    return (
+      <Layout>
+        <div className="pt-12 pb-20">
+          <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
+            <div className="space-y-4">
+              <h1 className="text-hero">Account access unavailable</h1>
+              <p className="text-body">
+                Our Supabase connection is not configured, so online sign-in and account creation are currently offline. Please contact our concierge team and we will get you taken care of right away.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button className="btn-brass" onClick={() => window.open(`tel:${siteConfig.contact.phone}`)}>
+                <Phone className="w-4 h-4 mr-2" />
+                Call {siteConfig.contact.formattedPhone}
+              </Button>
+              <Button variant="outline" className="btn-outline-brass" onClick={() => (window.location.href = `mailto:${siteConfig.contact.email}`)}>
+                <Mail className="w-4 h-4 mr-2" />
+                Email {siteConfig.contact.email}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>

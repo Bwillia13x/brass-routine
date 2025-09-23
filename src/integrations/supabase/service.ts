@@ -1,5 +1,6 @@
 import type { PostgrestError } from '@supabase/supabase-js';
-import { supabase } from './client';
+import { supabase, isSupabaseConfigured } from './client';
+import { siteConfig } from '@/lib/site-config';
 import type { TablesInsert } from './types';
 
 const DEFAULT_ERROR_MESSAGE =
@@ -31,6 +32,13 @@ export interface SubmitContactMessageInput {
 export const submitContactMessage = async (
   input: SubmitContactMessageInput,
 ): Promise<SupabaseActionResult> => {
+  if (!isSupabaseConfigured) {
+    return {
+      success: false,
+      error: `Online requests are temporarily unavailable. Please call ${siteConfig.contact.formattedPhone} or email ${siteConfig.contact.email}.`,
+    };
+  }
+
   const payload: TablesInsert<'contact_messages'> = {
     first_name: input.firstName,
     last_name: input.lastName,
@@ -64,6 +72,13 @@ export interface SubmitAppointmentRequestInput {
 export const submitAppointmentRequest = async (
   input: SubmitAppointmentRequestInput,
 ): Promise<SupabaseActionResult> => {
+  if (!isSupabaseConfigured) {
+    return {
+      success: false,
+      error: `Online booking is currently offline. Call ${siteConfig.contact.formattedPhone} or email ${siteConfig.contact.email} to secure your appointment.`,
+    };
+  }
+
   const payload: TablesInsert<'appointments'> = {
     user_id: input.userId,
     first_name: input.firstName,

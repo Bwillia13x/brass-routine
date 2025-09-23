@@ -1,17 +1,23 @@
-const requiredEnv = {
-  VITE_SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL as string | undefined,
-  VITE_SUPABASE_ANON_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined,
-};
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 
-function assertEnv(name: keyof typeof requiredEnv, value: string | undefined) {
-  if (!value) {
-    throw new Error(`Missing environment variable: ${name}. Did you configure your .env file?`);
+const missingEnvVars = [
+  !supabaseUrl ? 'VITE_SUPABASE_URL' : null,
+  !supabaseAnonKey ? 'VITE_SUPABASE_ANON_KEY' : null,
+].filter(Boolean) as string[];
+
+if (missingEnvVars.length > 0) {
+  const message = `Missing Supabase environment variables: ${missingEnvVars.join(', ')}. Supabase-powered features are disabled until these values are provided.`;
+
+  if (import.meta.env.DEV) {
+    console.warn(message);
+  } else {
+    console.error(message);
   }
-
-  return value;
 }
 
 export const env = Object.freeze({
-  supabaseUrl: assertEnv('VITE_SUPABASE_URL', requiredEnv.VITE_SUPABASE_URL),
-  supabaseAnonKey: assertEnv('VITE_SUPABASE_ANON_KEY', requiredEnv.VITE_SUPABASE_ANON_KEY),
+  supabase: supabaseUrl && supabaseAnonKey
+    ? { url: supabaseUrl, anonKey: supabaseAnonKey }
+    : null,
 });
