@@ -1,10 +1,13 @@
 import { Scissors, Sparkles, HandHeart, Zap, Wand2, ShieldCheck, Feather, Sparkle, Clock, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import Layout from '../components/Layout';
 import PageHero from '../components/PageHero';
 import PageSection from '../components/PageSection';
+import { slugify } from '@/lib/utils';
 
 const Services = () => {
+  const navigate = useNavigate();
   const serviceCategories = [
     {
       icon: Scissors,
@@ -131,14 +134,14 @@ const Services = () => {
           <>
             <Button
               className="btn-brass"
-              onClick={() => window.location.href = '/book'}
+              onClick={() => navigate('/book')}
             >
               Book an appointment
             </Button>
             <Button
               variant="outline"
               className="btn-outline-brass"
-              onClick={() => window.location.href = '/membership'}
+              onClick={() => navigate('/membership')}
             >
               Explore membership
             </Button>
@@ -198,7 +201,7 @@ const Services = () => {
                   </div>
                   <Button
                     className="btn-brass w-full justify-center group"
-                    onClick={() => window.location.href = `/book?service=${service.name.toLowerCase().replace(/\s+/g, '-')}`}
+                    onClick={() => navigate(`/book?service=${slugify(service.name)}`)}
                   >
                     Book {service.name}
                     <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
@@ -241,10 +244,10 @@ const Services = () => {
         tone="surface"
         actions={(
           <>
-            <Button className="btn-brass" onClick={() => window.location.href = '/book?service=consultation'}>
+            <Button className="btn-brass" onClick={() => navigate('/book?service=consultation')}>
               Book consultation
             </Button>
-            <Button variant="outline" className="btn-outline-brass" onClick={() => window.location.href = '/membership'}>
+            <Button variant="outline" className="btn-outline-brass" onClick={() => navigate('/membership')}>
               Compare membership benefits
             </Button>
           </>

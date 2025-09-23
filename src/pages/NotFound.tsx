@@ -1,4 +1,4 @@
-import { useLocation, NavLink } from "react-router-dom";
+import { useLocation, NavLink, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { Home, Search } from 'lucide-react';
 import Layout from '../components/Layout';
@@ -6,6 +6,7 @@ import { Button } from '../components/ui/button';
 
 const NotFound = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.error("404 Error: User attempted to access non-existent route:", location.pathname);
@@ -30,17 +31,17 @@ const NotFound = () => {
 
           <div className="space-y-4">
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
+              <Button
                 className="btn-brass"
-                onClick={() => window.location.href = '/'}
+                onClick={() => navigate('/')}
               >
                 <Home className="w-4 h-4 mr-2" />
                 Return Home
               </Button>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="btn-outline-brass"
-                onClick={() => window.location.href = '/services'}
+                onClick={() => navigate('/services')}
               >
                 View Services
               </Button>

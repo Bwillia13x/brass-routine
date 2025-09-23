@@ -1,8 +1,11 @@
+import { useNavigate } from 'react-router-dom';
 import { Clock, AlertCircle, CheckCircle, Phone, Mail } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import Layout from '../components/Layout';
+import { siteConfig } from '@/lib/site-config';
 
 const Cancellation = () => {
+  const navigate = useNavigate();
   return (
     <Layout>
       <div className="pt-12 pb-20">
@@ -140,14 +143,14 @@ const Cancellation = () => {
                     Quick Options
                   </h3>
                   <div className="space-y-3">
-                    <Button 
+                    <Button
                       className="btn-outline-brass w-full justify-start"
-                      onClick={() => window.open('tel:+1234567890')}
+                      onClick={() => window.open(`tel:${siteConfig.contact.phone}`)}
                     >
                       <Phone className="w-4 h-4 mr-3" />
-                      Call: [INSERT PHONE NUMBER]
+                      Call: {siteConfig.contact.formattedPhone}
                     </Button>
-                    <Button 
+                    <Button
                       variant="outline"
                       className="btn-outline-brass w-full justify-start"
                       onClick={() => window.location.href = 'mailto:appointments@andreasandco.ca'}
@@ -168,9 +171,9 @@ const Cancellation = () => {
                     <p>• Reschedule with real-time availability</p>
                     <p>• Cancel with instant confirmation</p>
                   </div>
-                  <Button 
+                  <Button
                     className="btn-brass w-full"
-                    onClick={() => window.location.href = '/auth'}
+                    onClick={() => navigate('/auth')}
                   >
                     Access Account
                   </Button>

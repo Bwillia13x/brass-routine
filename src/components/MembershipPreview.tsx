@@ -1,7 +1,10 @@
 import { Check, Crown, Star, Gift } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
+import { slugify } from '@/lib/utils';
 
 const MembershipPreview = () => {
+  const navigate = useNavigate();
   const memberships = [
     {
       name: 'Classic',
@@ -110,9 +113,9 @@ const MembershipPreview = () => {
                 ))}
               </ul>
 
-              <Button 
+              <Button
                 className={`w-full group/btn ${membership.popular ? 'btn-brass' : 'btn-outline-brass'}`}
-                onClick={() => window.location.href = `/membership?plan=${membership.name.toLowerCase()}`}
+                onClick={() => navigate(`/membership?plan=${slugify(membership.name)}`)}
               >
                 <span className="group-hover/btn:animate-pulse">{membership.cta}</span>
               </Button>
@@ -165,16 +168,16 @@ const MembershipPreview = () => {
             Kindly provide 12-hour notice for changes; a card on file secures your slot.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in [animation-delay:1s]">
-            <Button 
+            <Button
               className="btn-brass group"
-              onClick={() => window.location.href = '/membership'}
+              onClick={() => navigate('/membership')}
             >
               <span className="group-hover:animate-pulse">Compare All Benefits</span>
             </Button>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="btn-outline-brass group"
-              onClick={() => window.location.href = '/book'}
+              onClick={() => navigate('/book')}
             >
               <span className="group-hover:animate-pulse">Try a Service First</span>
             </Button>
