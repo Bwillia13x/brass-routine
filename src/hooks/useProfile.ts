@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase, isSupabaseConfigured } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 
 export interface Profile {
@@ -16,10 +16,10 @@ export interface Profile {
 export function useProfile() {
   const { user } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(isSupabaseConfigured);
 
   const fetchProfile = useCallback(async () => {
-    if (!user) return;
+    if (!user || !isSupabaseConfigured) return;
 
     try {
       const { data, error } = await supabase
@@ -41,6 +41,11 @@ export function useProfile() {
   }, [user]);
 
   useEffect(() => {
+    if (!isSupabaseConfigured) {
+      setLoading(false);
+      return;
+    }
+
     if (user) {
       fetchProfile();
     } else {
@@ -50,7 +55,7 @@ export function useProfile() {
   }, [user, fetchProfile]);
 
   const updateProfile = async (updates: Partial<Profile>) => {
-    if (!user || !profile) return;
+    if (!user || !profile || !isSupabaseConfigured) return;
 
     try {
       const { data, error } = await supabase
