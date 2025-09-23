@@ -199,9 +199,83 @@
     opacity: 0;
     transition: opacity 0.3s ease;
   }
-  
+
   .card-luxury:hover::before {
     opacity: 0.1;
+  }
+
+  .surface-panel {
+    @apply bg-card/80 border border-brass/20 rounded-xl backdrop-blur-md shadow-xl;
+  }
+
+  .section-eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.45em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: hsl(var(--brass) / 0.8);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .section-eyebrow::after {
+    content: '';
+    display: inline-block;
+    width: 2.5rem;
+    height: 1px;
+    background: linear-gradient(90deg, hsl(var(--brass) / 0.7), transparent);
+  }
+
+  .section-muted {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(140deg, hsl(var(--coal) / 0.85), hsl(var(--ny-green) / 0.55));
+  }
+
+  .section-muted::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 20% 20%, hsl(var(--brass) / 0.12), transparent 55%),
+      radial-gradient(circle at 80% 0%, hsl(var(--brass) / 0.1), transparent 45%);
+    opacity: 0.7;
+  }
+
+  .section-muted::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-top: 1px solid hsl(var(--brass) / 0.15);
+    border-bottom: 1px solid hsl(var(--brass) / 0.15);
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  .section-contrast {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(120deg, hsl(var(--coal) / 0.9), hsl(var(--coal) / 0.7));
+  }
+
+  .section-contrast::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 25% 10%, hsl(var(--brass) / 0.15), transparent 55%),
+      radial-gradient(circle at 80% 20%, hsl(var(--brass) / 0.1), transparent 50%);
+    opacity: 0.6;
+  }
+
+  .section-contrast::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid hsl(var(--brass) / 0.08);
+    opacity: 0.4;
+    pointer-events: none;
   }
   
   /* Enhanced text styles with better hierarchy */
