@@ -1,71 +1,80 @@
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { MapPin, Phone, Clock, Mail, Navigation, CalendarCheck, UsersRound, ShieldCheck } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
 import Layout from '../components/Layout';
 import PageHero from '../components/PageHero';
 import PageSection from '../components/PageSection';
+import { submitContactMessage } from '@/integrations/supabase/service';
+
+const contactFormSchema = z.object({
+  firstName: z.string().min(1, 'First name is required'),
+  lastName: z.string().min(1, 'Last name is required'),
+  email: z.string().email('Enter a valid email address'),
+  phone: z
+    .string()
+    .trim()
+    .refine((value) => value === '' || /^[0-9+().\-\s]*$/.test(value), 'Enter a valid phone number'),
+  subject: z.string().min(1, 'Select a subject'),
+  message: z.string().min(10, 'Please share a few details so our team can assist you.'),
+});
+
+type ContactFormValues = z.infer<typeof contactFormSchema>;
 
 const Contact = () => {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    subject: '',
-    message: '',
+  const form = useForm<ContactFormValues>({
+    resolver: zodResolver(contactFormSchema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      subject: '',
+      message: '',
+    },
   });
-  const [loading, setLoading] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
+  const onSubmit = async (values: ContactFormValues) => {
+    const result = await submitContactMessage({
+      firstName: values.firstName,
+      lastName: values.lastName,
+      email: values.email,
+      phone: values.phone.trim() === '' ? undefined : values.phone.trim(),
+      subject: values.subject,
+      message: values.message,
+    });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      const { error } = await supabase
-        .from('contact_messages')
-        .insert({
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          email: formData.email,
-          phone: formData.phone,
-          subject: formData.subject,
-          message: formData.message,
-        });
-
-      if (error) throw error;
-
+    if (!result.success) {
       toast({
-        title: 'Message Sent!',
-        description: "Thank you for contacting us. We'll get back to you soon.",
-      });
-
-      setFormData({
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        subject: '',
-        message: '',
-      });
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'There was an error sending your message. Please try again.',
+        title: 'Unable to send message',
+        description: result.error,
         variant: 'destructive',
       });
-    } finally {
-      setLoading(false);
+      return;
     }
+
+    toast({
+      title: 'Message Sent!',
+      description: "Thank you for contacting us. We'll get back to you soon.",
+    });
+
+    form.reset({
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      subject: '',
+      message: '',
+    });
   };
 
   const inputClass = 'input-luxury w-full';
+  const isSubmitting = form.formState.isSubmitting;
 
   return (
     <Layout>
@@ -76,7 +85,7 @@ const Contact = () => {
         align="left"
         actions={(
           <>
-            <Button className="btn-brass" onClick={() => window.location.href = '/book'}>
+            <Button className="btn-brass" onClick={() => (window.location.href = '/book')}>
               Book an appointment
             </Button>
             <Button variant="outline" className="btn-outline-brass" onClick={() => window.open('tel:+1234567890')}>
@@ -153,7 +162,7 @@ const Contact = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Button className="btn-brass w-full" onClick={() => window.location.href = '/book'}>
+            <Button className="btn-brass w-full" onClick={() => (window.location.href = '/book')}>
               Book appointment
             </Button>
             <Button
@@ -169,95 +178,111 @@ const Contact = () => {
 
         <div className="surface-panel p-8 lg:col-span-3">
           <h2 className="font-display text-2xl font-semibold text-brass mb-6">Send us a message</h2>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-porcelain font-medium mb-2">First Name</label>
-                <input
-                  type="text"
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
                   name="firstName"
-                  required
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                  className={inputClass}
-                  placeholder="Your first name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-porcelain">First Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} className={inputClass} placeholder="Your first name" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
-              <div>
-                <label className="block text-porcelain font-medium mb-2">Last Name</label>
-                <input
-                  type="text"
+                <FormField
+                  control={form.control}
                   name="lastName"
-                  required
-                  value={formData.lastName}
-                  onChange={handleInputChange}
-                  className={inputClass}
-                  placeholder="Your last name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-porcelain">Last Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} className={inputClass} placeholder="Your last name" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
               </div>
-            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-porcelain font-medium mb-2">Email</label>
-                <input
-                  type="email"
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
                   name="email"
-                  required
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className={inputClass}
-                  placeholder="your.email@example.com"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-porcelain">Email</FormLabel>
+                      <FormControl>
+                        <Input {...field} className={inputClass} placeholder="your.email@example.com" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
-              <div>
-                <label className="block text-porcelain font-medium mb-2">Phone (Optional)</label>
-                <input
-                  type="tel"
+                <FormField
+                  control={form.control}
                   name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  className={inputClass}
-                  placeholder="(123) 456-7890"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-porcelain">Phone (Optional)</FormLabel>
+                      <FormControl>
+                        <Input {...field} className={inputClass} placeholder="(123) 456-7890" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
               </div>
-            </div>
 
-            <div>
-              <label className="block text-porcelain font-medium mb-2">Subject</label>
-              <select
+              <FormField
+                control={form.control}
                 name="subject"
-                required
-                value={formData.subject}
-                onChange={handleInputChange}
-                className={inputClass}
-              >
-                <option value="">Select a subject</option>
-                <option value="booking">Booking Question</option>
-                <option value="membership">Membership Inquiry</option>
-                <option value="services">Services Information</option>
-                <option value="wedding">Wedding Package</option>
-                <option value="general">General Question</option>
-              </select>
-            </div>
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-porcelain">Subject</FormLabel>
+                    <FormControl>
+                      <select {...field} className={inputClass}>
+                        <option value="">Select a subject</option>
+                        <option value="booking">Booking Question</option>
+                        <option value="membership">Membership Inquiry</option>
+                        <option value="services">Services Information</option>
+                        <option value="wedding">Wedding Package</option>
+                        <option value="general">General Question</option>
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <div>
-              <label className="block text-porcelain font-medium mb-2">Message</label>
-              <textarea
+              <FormField
+                control={form.control}
                 name="message"
-                rows={4}
-                required
-                value={formData.message}
-                onChange={handleInputChange}
-                className={`${inputClass} resize-none`}
-                placeholder="Tell us how we can help you..."
-              ></textarea>
-            </div>
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-porcelain">Message</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        rows={4}
+                        className={`${inputClass} resize-none`}
+                        placeholder="Tell us how we can help you..."
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <Button type="submit" className="btn-brass w-full" disabled={loading}>
-              {loading ? 'Sending...' : 'Send Message'}
-            </Button>
-          </form>
+              <Button type="submit" className="btn-brass w-full" disabled={isSubmitting}>
+                {isSubmitting ? 'Sending...' : 'Send Message'}
+              </Button>
+            </form>
+          </Form>
         </div>
       </PageSection>
 
@@ -280,37 +305,14 @@ const Contact = () => {
               <UsersRound className="w-6 h-6 text-coal" />
             </div>
             <h4 className="font-display text-xl font-semibold text-porcelain">Group experiences</h4>
-            <p className="text-steel text-sm">Coordinate multi-chair bookings with refreshments and photography add-ons.</p>
+            <p className="text-steel text-sm">Host corporate retreats or membership appreciation nights with crafted menus.</p>
           </div>
           <div className="surface-panel p-6 space-y-3 text-left md:text-center">
             <div className="w-12 h-12 mx-0 md:mx-auto rounded-full bg-gradient-brass flex items-center justify-center">
               <ShieldCheck className="w-6 h-6 text-coal" />
             </div>
-            <h4 className="font-display text-xl font-semibold text-porcelain">Concierge support</h4>
-            <p className="text-steel text-sm">Dedicated point of contact for itinerary changes, travel delays, or valet requests.</p>
-          </div>
-        </div>
-      </PageSection>
-
-      <PageSection
-        eyebrow="Find us"
-        title="Visit the lounge"
-        align="center"
-        tone="contrast"
-      >
-        <div className="surface-panel p-2 bg-transparent">
-          <div className="bg-ny-green/60 rounded-xl h-96 flex items-center justify-center text-center px-6">
-            <div>
-              <MapPin className="w-12 h-12 text-brass mx-auto mb-4" />
-              <p className="text-porcelain font-medium mb-2">Interactive map coming soon</p>
-              <p className="text-steel text-sm mb-4">Our Google Maps integration will live here. Until then, tap below for directions.</p>
-              <Button
-                className="btn-outline-brass"
-                onClick={() => window.open('https://maps.google.com/?q=[INSERT ADDRESS]')}
-              >
-                View on Google Maps
-              </Button>
-            </div>
+            <h4 className="font-display text-xl font-semibold text-porcelain">Member exclusives</h4>
+            <p className="text-steel text-sm">Reserve members unlock private lockers, tasting events, and concierge support.</p>
           </div>
         </div>
       </PageSection>

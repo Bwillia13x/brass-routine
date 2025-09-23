@@ -1,34 +1,78 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { Calendar, Clock, User, Phone, Mail, CreditCard, ShieldCheck, MessageCircle, Sparkles } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import Layout from '../components/Layout';
 import PageHero from '../components/PageHero';
 import PageSection from '../components/PageSection';
+import { submitAppointmentRequest } from '@/integrations/supabase/service';
+
+const membershipOptions = ['none', 'classic', 'reserve', 'interested'] as const;
+
+const bookingFormSchema = z.object({
+  firstName: z.string().min(1, 'First name is required'),
+  lastName: z.string().min(1, 'Last name is required'),
+  phone: z
+    .string()
+    .min(7, 'Phone number is required')
+    .regex(/^[0-9+().\-\s]*$/, 'Enter a valid phone number'),
+  email: z.string().email('Enter a valid email address'),
+  service: z.string().min(1, 'Please select a service'),
+  membershipStatus: z.enum(membershipOptions, {
+    errorMap: () => ({ message: 'Select your membership status' }),
+  }),
+  preferredDateTime: z.string().min(5, 'Share your preferred dates and times'),
+});
+
+type BookingFormValues = z.infer<typeof bookingFormSchema>;
+
+const bookingHighlights = [
+  {
+    icon: ShieldCheck,
+    title: 'Card-on-file security',
+    description: 'Your details are encrypted through Supabase. Charges only occur after confirmation.',
+  },
+  {
+    icon: MessageCircle,
+    title: 'Concierge follow-up',
+    description: 'Expect a text or call within 24 hours with confirmation and pre-visit recommendations.',
+  },
+  {
+    icon: Sparkles,
+    title: 'Member priority',
+    description: 'Reserve and Classic members receive first access to openings and waitlists.',
+  },
+];
 
 const BookingPage = () => {
   const { user } = useAuth();
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    phone: '',
-    email: user?.email || '',
-    service: '',
-    membershipStatus: 'none',
-    preferredDateTime: '',
+  const form = useForm<BookingFormValues>({
+    resolver: zodResolver(bookingFormSchema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      phone: '',
+      email: user?.email ?? '',
+      service: '',
+      membershipStatus: 'none',
+      preferredDateTime: '',
+    },
   });
-  const [loading, setLoading] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
+  useEffect(() => {
+    if (user?.email) {
+      form.setValue('email', user.email, { shouldDirty: false });
+    }
+  }, [user?.email, form]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const onSubmit = async (values: BookingFormValues) => {
     if (!user) {
       toast({
         title: 'Please sign in',
@@ -39,68 +83,44 @@ const BookingPage = () => {
       return;
     }
 
-    setLoading(true);
+    const result = await submitAppointmentRequest({
+      userId: user.id,
+      firstName: values.firstName,
+      lastName: values.lastName,
+      email: values.email,
+      phone: values.phone,
+      service: values.service,
+      membershipStatus: values.membershipStatus,
+      preferredDateTime: values.preferredDateTime,
+    });
 
-    try {
-      const { error } = await supabase
-        .from('appointments')
-        .insert({
-          user_id: user.id,
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          email: formData.email,
-          phone: formData.phone,
-          service: formData.service,
-          membership_status: formData.membershipStatus,
-          preferred_datetime: formData.preferredDateTime,
-        });
-
-      if (error) throw error;
-
+    if (!result.success) {
       toast({
-        title: 'Appointment Requested!',
-        description: "We'll contact you within 24 hours to confirm your appointment.",
-      });
-
-      setFormData({
-        firstName: '',
-        lastName: '',
-        phone: '',
-        email: user?.email || '',
-        service: '',
-        membershipStatus: 'none',
-        preferredDateTime: '',
-      });
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'There was an error submitting your appointment request. Please try again.',
+        title: 'Unable to submit',
+        description: result.error,
         variant: 'destructive',
       });
-    } finally {
-      setLoading(false);
+      return;
     }
+
+    toast({
+      title: 'Appointment Requested!',
+      description: "We'll contact you within 24 hours to confirm your appointment.",
+    });
+
+    form.reset({
+      firstName: '',
+      lastName: '',
+      phone: '',
+      email: user?.email ?? '',
+      service: '',
+      membershipStatus: 'none',
+      preferredDateTime: '',
+    });
   };
 
   const inputClass = 'input-luxury w-full';
-
-  const bookingHighlights = [
-    {
-      icon: ShieldCheck,
-      title: 'Card-on-file security',
-      description: 'Your details are encrypted through Supabase. Charges only occur after confirmation.',
-    },
-    {
-      icon: MessageCircle,
-      title: 'Concierge follow-up',
-      description: 'Expect a text or call within 24 hours with confirmation and pre-visit recommendations.',
-    },
-    {
-      icon: Sparkles,
-      title: 'Member priority',
-      description: 'Reserve and Classic members receive first access to openings and waitlists.',
-    },
-  ];
+  const isSubmitting = form.formState.isSubmitting;
 
   return (
     <Layout>
@@ -114,7 +134,7 @@ const BookingPage = () => {
             <Button className="btn-brass" onClick={() => window.open('tel:+1234567890')}>
               Call to book
             </Button>
-            <Button variant="outline" className="btn-outline-brass" onClick={() => window.location.href = '/membership'}>
+            <Button variant="outline" className="btn-outline-brass" onClick={() => (window.location.href = '/membership')}>
               Explore member perks
             </Button>
           </>
@@ -133,7 +153,8 @@ const BookingPage = () => {
           </div>
           <h2 className="font-display text-3xl font-semibold text-porcelain">Online booking system</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Our integrated booking system will appear here. For now, please call us directly or use the request form below and we will secure your preferred time.
+            Our integrated booking system will appear here. For now, please call us directly or use the request form below and we
+            will secure your preferred time.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button className="btn-brass text-lg px-8 py-4" onClick={() => window.open('tel:+1234567890')}>
@@ -143,7 +164,7 @@ const BookingPage = () => {
             <Button
               variant="outline"
               className="btn-outline-brass text-lg px-8 py-4"
-              onClick={() => window.location.href = '/contact'}
+              onClick={() => (window.location.href = '/contact')}
             >
               <Mail className="w-5 h-5 mr-2" />
               Contact form
@@ -164,9 +185,17 @@ const BookingPage = () => {
               Choose your experience
             </h3>
             <div className="space-y-3 text-steel text-sm">
-              <p><strong className="text-porcelain">First visit:</strong> Start with our Signature Cut or Gentleman’s Facial to experience the full consultation and finish ritual.</p>
-              <p><strong className="text-porcelain">Members:</strong> Apply credits to any service or stack them for an elevated ritual.</p>
-              <p><strong className="text-porcelain">Reserve tier:</strong> Master Barber access with extended consultation and lounge amenities.</p>
+              <p>
+                <strong className="text-porcelain">First visit:</strong> Start with our Signature Cut or Gentleman’s Facial to
+                experience the full consultation and finish ritual.
+              </p>
+              <p>
+                <strong className="text-porcelain">Members:</strong> Apply credits to any service or stack them for an elevated ritual.
+              </p>
+              <p>
+                <strong className="text-porcelain">Reserve tier:</strong> Master Barber access with extended consultation and lounge
+                amenities.
+              </p>
             </div>
           </div>
 
@@ -176,10 +205,18 @@ const BookingPage = () => {
               Booking policies
             </h3>
             <div className="space-y-3 text-steel text-sm">
-              <p><strong className="text-porcelain">Advance notice:</strong> Kindly provide 12-hour notice for changes or cancellations.</p>
-              <p><strong className="text-porcelain">Payment:</strong> A card on file secures your slot. Members enjoy priority booking.</p>
-              <p><strong className="text-porcelain">Arrival:</strong> Please arrive 10 minutes early for consultation and preparation.</p>
-              <p><strong className="text-porcelain">Rescheduling:</strong> Flexible rescheduling available with advance notice.</p>
+              <p>
+                <strong className="text-porcelain">Advance notice:</strong> Kindly provide 12-hour notice for changes or cancellations.
+              </p>
+              <p>
+                <strong className="text-porcelain">Payment:</strong> A card on file secures your slot. Members enjoy priority booking.
+              </p>
+              <p>
+                <strong className="text-porcelain">Arrival:</strong> Please arrive 10 minutes early for consultation and preparation.
+              </p>
+              <p>
+                <strong className="text-porcelain">Rescheduling:</strong> Flexible rescheduling available with advance notice.
+              </p>
             </div>
           </div>
         </div>
@@ -210,119 +247,140 @@ const BookingPage = () => {
         align="center"
         tone="surface"
       >
-        <form onSubmit={handleSubmit} className="max-w-2xl mx-auto space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-porcelain font-medium mb-2">First Name *</label>
-              <input
-                type="text"
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-2xl mx-auto space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
                 name="firstName"
-                required
-                value={formData.firstName}
-                onChange={handleInputChange}
-                className={inputClass}
-                placeholder="Your first name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-porcelain">First Name *</FormLabel>
+                    <FormControl>
+                      <Input {...field} className={inputClass} placeholder="Your first name" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div>
-              <label className="block text-porcelain font-medium mb-2">Last Name *</label>
-              <input
-                type="text"
+              <FormField
+                control={form.control}
                 name="lastName"
-                required
-                value={formData.lastName}
-                onChange={handleInputChange}
-                className={inputClass}
-                placeholder="Your last name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-porcelain">Last Name *</FormLabel>
+                    <FormControl>
+                      <Input {...field} className={inputClass} placeholder="Your last name" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
             </div>
-          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-porcelain font-medium mb-2">Phone *</label>
-              <input
-                type="tel"
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
                 name="phone"
-                required
-                value={formData.phone}
-                onChange={handleInputChange}
-                className={inputClass}
-                placeholder="(123) 456-7890"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-porcelain">Phone *</FormLabel>
+                    <FormControl>
+                      <Input {...field} className={inputClass} placeholder="(123) 456-7890" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div>
-              <label className="block text-porcelain font-medium mb-2">Email *</label>
-              <input
-                type="email"
+              <FormField
+                control={form.control}
                 name="email"
-                required
-                value={formData.email}
-                onChange={handleInputChange}
-                className={inputClass}
-                placeholder="your.email@example.com"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-porcelain">Email *</FormLabel>
+                    <FormControl>
+                      <Input {...field} className={inputClass} placeholder="your.email@example.com" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
             </div>
-          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-porcelain font-medium mb-2">Preferred Service</label>
-              <select
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
                 name="service"
-                value={formData.service}
-                onChange={handleInputChange}
-                className={inputClass}
-              >
-                <option value="">Select a service</option>
-                <option value="signature-cut">Signature Cut</option>
-                <option value="cut-style-premium">Cut & Style Premium</option>
-                <option value="traditional-shave">Traditional Shave</option>
-                <option value="beard-sculpting">Beard Sculpting</option>
-                <option value="gentlemans-facial">Gentleman's Facial</option>
-                <option value="led-therapy">LED Light Therapy</option>
-                <option value="massage">Relaxation Massage</option>
-                <option value="consultation">Consultation Only</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-porcelain font-medium mb-2">Membership Status</label>
-              <select
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-porcelain">Preferred Service</FormLabel>
+                    <FormControl>
+                      <select {...field} className={inputClass}>
+                        <option value="">Select a service</option>
+                        <option value="signature-cut">Signature Cut</option>
+                        <option value="cut-style-premium">Cut & Style Premium</option>
+                        <option value="traditional-shave">Traditional Shave</option>
+                        <option value="beard-sculpting">Beard Sculpting</option>
+                        <option value="gentlemans-facial">Gentleman's Facial</option>
+                        <option value="led-therapy">LED Light Therapy</option>
+                        <option value="massage">Relaxation Massage</option>
+                        <option value="consultation">Consultation Only</option>
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="membershipStatus"
-                value={formData.membershipStatus}
-                onChange={handleInputChange}
-                className={inputClass}
-              >
-                <option value="none">Not a Member</option>
-                <option value="classic">Classic Member</option>
-                <option value="reserve">Reserve Member</option>
-                <option value="interested">Interested in Membership</option>
-              </select>
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-porcelain">Membership Status</FormLabel>
+                    <FormControl>
+                      <select {...field} className={inputClass}>
+                        <option value="none">Not a Member</option>
+                        <option value="classic">Classic Member</option>
+                        <option value="reserve">Reserve Member</option>
+                        <option value="interested">Interested in Membership</option>
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
-          </div>
 
-          <div>
-            <label className="block text-porcelain font-medium mb-2">Preferred Date & Time</label>
-            <textarea
+            <FormField
+              control={form.control}
               name="preferredDateTime"
-              rows={3}
-              value={formData.preferredDateTime}
-              onChange={handleInputChange}
-              className={`${inputClass} resize-none`}
-              placeholder="Let us know your preferred dates, times, and any special requests..."
-            ></textarea>
-          </div>
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-porcelain">Preferred Date & Time</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      rows={3}
+                      className={`${inputClass} resize-none`}
+                      placeholder="Let us know your preferred dates, times, and any special requests..."
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <div className="text-center">
-            <Button type="submit" className="btn-brass text-lg px-12 py-4" disabled={loading}>
-              <CreditCard className="w-5 h-5 mr-2" />
-              {loading ? 'Submitting...' : 'Request Appointment'}
-            </Button>
-            <p className="text-steel text-sm mt-3">
-              We'll contact you within 24 hours to confirm your appointment.
-            </p>
-          </div>
-        </form>
+            <div className="text-center">
+              <Button type="submit" className="btn-brass text-lg px-12 py-4" disabled={isSubmitting}>
+                <CreditCard className="w-5 h-5 mr-2" />
+                {isSubmitting ? 'Submitting...' : 'Request Appointment'}
+              </Button>
+              <p className="text-steel text-sm mt-3">
+                We'll contact you within 24 hours to confirm your appointment.
+              </p>
+            </div>
+          </form>
+        </Form>
       </PageSection>
     </Layout>
   );
