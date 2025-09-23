@@ -1,10 +1,13 @@
 import { Check, Crown, Star, Gift, Phone, ShieldCheck, Sparkles, Calendar } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import Layout from '../components/Layout';
 import PageHero from '../components/PageHero';
 import PageSection from '../components/PageSection';
+import { slugify } from '@/lib/utils';
 
 const Membership = () => {
+  const navigate = useNavigate();
   const memberships = [
     {
       name: 'Classic',
@@ -95,10 +98,10 @@ const Membership = () => {
         description="Monthly credits, priority booking, and private lounge privileges. Choose the membership cadence that matches your routine."
         actions={(
           <>
-            <Button className="btn-brass" onClick={() => window.location.href = '/book?service=consultation'}>
+            <Button className="btn-brass" onClick={() => navigate('/book?service=consultation')}>
               Meet the team first
             </Button>
-            <Button variant="outline" className="btn-outline-brass" onClick={() => window.location.href = '/book'}>
+            <Button variant="outline" className="btn-outline-brass" onClick={() => navigate('/book')}>
               Book with credits
             </Button>
           </>
@@ -162,7 +165,7 @@ const Membership = () => {
 
             <Button
               className={`w-full text-lg py-4 ${membership.popular ? 'btn-brass' : 'btn-outline-brass'}`}
-              onClick={() => window.location.href = `/book?membership=${membership.name.toLowerCase()}`}
+              onClick={() => navigate(`/book?membership=${slugify(membership.name)}`)}
             >
               {membership.cta}
             </Button>
@@ -266,10 +269,10 @@ const Membership = () => {
         tone="surface"
         actions={(
           <>
-            <Button className="btn-brass" onClick={() => window.location.href = '/membership?plan=reserve'}>
+            <Button className="btn-brass" onClick={() => navigate('/membership?plan=reserve')}>
               Join membership
             </Button>
-            <Button variant="outline" className="btn-outline-brass" onClick={() => window.location.href = '/book'}>
+            <Button variant="outline" className="btn-outline-brass" onClick={() => navigate('/book')}>
               Try a service first
             </Button>
           </>

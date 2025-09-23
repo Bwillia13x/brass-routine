@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -13,6 +14,7 @@ import Layout from '../components/Layout';
 import PageHero from '../components/PageHero';
 import PageSection from '../components/PageSection';
 import { submitAppointmentRequest } from '@/integrations/supabase/service';
+import { siteConfig } from '@/lib/site-config';
 
 const membershipOptions = ['none', 'classic', 'reserve', 'interested'] as const;
 
@@ -52,6 +54,7 @@ const bookingHighlights = [
 ];
 
 const BookingPage = () => {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingFormSchema),
@@ -79,7 +82,7 @@ const BookingPage = () => {
         description: 'You need to be signed in to book an appointment.',
         variant: 'destructive',
       });
-      window.location.href = '/auth';
+      navigate('/auth');
       return;
     }
 
@@ -131,10 +134,10 @@ const BookingPage = () => {
         align="left"
         actions={(
           <>
-            <Button className="btn-brass" onClick={() => window.open('tel:+1234567890')}>
+            <Button className="btn-brass" onClick={() => window.open(`tel:${siteConfig.contact.phone}`)}>
               Call to book
             </Button>
-            <Button variant="outline" className="btn-outline-brass" onClick={() => (window.location.href = '/membership')}>
+            <Button variant="outline" className="btn-outline-brass" onClick={() => navigate('/membership')}>
               Explore member perks
             </Button>
           </>
@@ -157,14 +160,14 @@ const BookingPage = () => {
             will secure your preferred time.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button className="btn-brass text-lg px-8 py-4" onClick={() => window.open('tel:+1234567890')}>
+            <Button className="btn-brass text-lg px-8 py-4" onClick={() => window.open(`tel:${siteConfig.contact.phone}`)}>
               <Phone className="w-5 h-5 mr-2" />
-              Call to book: [INSERT PHONE]
+              Call to book: {siteConfig.contact.formattedPhone}
             </Button>
             <Button
               variant="outline"
               className="btn-outline-brass text-lg px-8 py-4"
-              onClick={() => (window.location.href = '/contact')}
+              onClick={() => navigate('/contact')}
             >
               <Mail className="w-5 h-5 mr-2" />
               Contact form

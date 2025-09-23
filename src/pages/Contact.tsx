@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { MapPin, Phone, Clock, Mail, Navigation, CalendarCheck, UsersRound, ShieldCheck } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -11,6 +12,7 @@ import Layout from '../components/Layout';
 import PageHero from '../components/PageHero';
 import PageSection from '../components/PageSection';
 import { submitContactMessage } from '@/integrations/supabase/service';
+import { siteConfig } from '@/lib/site-config';
 
 const contactFormSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -27,6 +29,7 @@ const contactFormSchema = z.object({
 type ContactFormValues = z.infer<typeof contactFormSchema>;
 
 const Contact = () => {
+  const navigate = useNavigate();
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
@@ -85,10 +88,10 @@ const Contact = () => {
         align="left"
         actions={(
           <>
-            <Button className="btn-brass" onClick={() => (window.location.href = '/book')}>
+            <Button className="btn-brass" onClick={() => navigate('/book')}>
               Book an appointment
             </Button>
-            <Button variant="outline" className="btn-outline-brass" onClick={() => window.open('tel:+1234567890')}>
+            <Button variant="outline" className="btn-outline-brass" onClick={() => window.open(`tel:${siteConfig.contact.phone}`)}>
               Call the lounge
             </Button>
           </>
@@ -112,8 +115,13 @@ const Contact = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold">Address</h3>
-                  <p className="text-muted-foreground">[INSERT ADDRESS]</p>
-                  <p className="text-muted-foreground">Calgary, AB [POSTAL CODE]</p>
+                  <p className="text-muted-foreground">{siteConfig.address.line1}</p>
+                  {siteConfig.address.line2 && (
+                    <p className="text-muted-foreground">{siteConfig.address.line2}</p>
+                  )}
+                  <p className="text-muted-foreground">
+                    {siteConfig.address.city}, {siteConfig.address.region} {siteConfig.address.postalCode}
+                  </p>
                   <p className="text-steel text-sm mt-2">Premium parking available. Valet service for Reserve members.</p>
                 </div>
               </div>
@@ -124,8 +132,8 @@ const Contact = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold">Phone</h3>
-                  <a href="tel:+1234567890" className="text-brass hover:text-brass/80 transition-colors text-lg">
-                    [INSERT PHONE]
+                  <a href={`tel:${siteConfig.contact.phone}`} className="text-brass hover:text-brass/80 transition-colors text-lg">
+                    {siteConfig.contact.formattedPhone}
                   </a>
                   <p className="text-steel text-sm mt-1">Members have priority phone support.</p>
                 </div>
@@ -137,11 +145,13 @@ const Contact = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold">Hours</h3>
-                  <div className="text-muted-foreground space-y-1">
-                    <p>Monday - Friday: [INSERT HOURS]</p>
-                    <p>Saturday: [INSERT HOURS]</p>
-                    <p>Sunday: [INSERT HOURS]</p>
-                  </div>
+                  <ul className="text-muted-foreground space-y-1">
+                    {siteConfig.hours.map((entry) => (
+                      <li key={entry.days}>
+                        <span className="text-porcelain">{entry.days}:</span> {entry.time}
+                      </li>
+                    ))}
+                  </ul>
                   <p className="text-steel text-sm mt-2">Extended hours available for Reserve members.</p>
                 </div>
               </div>
@@ -162,13 +172,13 @@ const Contact = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Button className="btn-brass w-full" onClick={() => (window.location.href = '/book')}>
+            <Button className="btn-brass w-full" onClick={() => navigate('/book')}>
               Book appointment
             </Button>
             <Button
               variant="outline"
               className="btn-outline-brass w-full"
-              onClick={() => window.open('https://maps.google.com/?q=[INSERT ADDRESS]')}
+              onClick={() => window.open(siteConfig.mapLink, '_blank', 'noopener,noreferrer')}
             >
               <Navigation className="w-4 h-4 mr-2" />
               Get directions

@@ -1,8 +1,11 @@
 import { Scissors, Sparkles, HandHeart, Zap, Users } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import groomingToolsImage from '@/assets/grooming-tools.jpg';
+import { slugify } from '@/lib/utils';
 
 const ServicesPreview = () => {
+  const navigate = useNavigate();
   const services = [
     {
       icon: Scissors,
@@ -98,10 +101,10 @@ const ServicesPreview = () => {
                 <span className="font-display text-lg font-semibold text-brass group-hover:animate-pulse">
                   {service.price}
                 </span>
-                <Button 
-                  size="sm" 
+                <Button
+                  size="sm"
                   className="btn-brass group/btn"
-                  onClick={() => window.location.href = `/book?service=${service.title.toLowerCase()}`}
+                  onClick={() => navigate(`/book?service=${slugify(service.title)}`)}
                 >
                   <span className="group-hover/btn:animate-pulse">Book</span>
                 </Button>
@@ -149,10 +152,14 @@ const ServicesPreview = () => {
             </div>
             
             <div className="flex space-x-4 animate-scale-in [animation-delay:0.8s]">
-              <Button className="btn-brass group">
+              <Button className="btn-brass group" onClick={() => navigate(`/book?service=${slugify('Reserve Experience')}`)}>
                 <span className="group-hover:animate-pulse">Reserve Now</span>
               </Button>
-              <Button variant="outline" className="btn-outline-brass group">
+              <Button
+                variant="outline"
+                className="btn-outline-brass group"
+                onClick={() => navigate('/membership')}
+              >
                 <span className="group-hover:animate-pulse">Learn More</span>
               </Button>
             </div>

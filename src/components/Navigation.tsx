@@ -4,6 +4,7 @@ import { Menu, X, Phone, Calendar, User, LogOut } from 'lucide-react';
 import { Button } from './ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
+import { siteConfig } from '@/lib/site-config';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,6 +22,10 @@ const Navigation = () => {
     { name: 'About', href: '/about' },
     { name: 'Contact', href: '/contact' }
   ];
+
+  const handleCallClick = () => {
+    window.open(`tel:${siteConfig.contact.phone}`);
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-coal/95 backdrop-blur-sm border-b border-brass/20">
@@ -62,11 +67,12 @@ const Navigation = () => {
 
           {/* Desktop CTA Buttons */}
           <div className="hidden lg:flex items-center space-x-4">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="sm"
               className="btn-outline-brass group magnetic-hover animate-slide-in-left [animation-delay:0.8s]"
-              onClick={() => window.open('tel:+1234567890')}
+              onClick={handleCallClick}
+              aria-label={`Call ${siteConfig.contact.formattedPhone}`}
             >
               <Phone className="w-4 h-4 mr-2 group-hover:animate-bounce-subtle group-hover:rotate-12 transition-all duration-300" />
               <span className="group-hover:tracking-wide transition-all duration-300">Call</span>
@@ -149,10 +155,11 @@ const Navigation = () => {
               </NavLink>
             ))}
             <div className="pt-4 space-y-3">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="btn-outline-brass w-full"
-                onClick={() => window.open('tel:+1234567890')}
+                onClick={handleCallClick}
+                aria-label={`Call ${siteConfig.contact.formattedPhone}`}
               >
                 <Phone className="w-4 h-4 mr-2" />
                 Call Us

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { siteConfig } from '@/lib/site-config';
 
 interface SEOProps {
   title?: string;
@@ -19,7 +20,9 @@ const SEO = ({
   type = 'website'
 }: SEOProps) => {
   const location = useLocation();
-  const currentUrl = `${window.location.origin}${location.pathname}`;
+  const currentUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}${location.pathname}`
+    : `${siteConfig.siteUrl}${location.pathname}`;
   
   useEffect(() => {
     // Update document title
@@ -76,14 +79,18 @@ const SEO = ({
       "@type": "HairSalon",
       "name": "Andreas & Co.",
       "description": description,
-      "url": "https://andreasandco.ca",
+      "url": siteConfig.siteUrl,
       "image": image,
-      "telephone": "+1-234-567-8900",
+      "telephone": siteConfig.contact.phone,
       "address": {
         "@type": "PostalAddress",
-        "addressLocality": "Calgary",
-        "addressRegion": "AB",
-        "addressCountry": "CA"
+        "streetAddress": siteConfig.address.line2
+          ? `${siteConfig.address.line1}, ${siteConfig.address.line2}`
+          : siteConfig.address.line1,
+        "addressLocality": siteConfig.address.city,
+        "addressRegion": siteConfig.address.region,
+        "postalCode": siteConfig.address.postalCode,
+        "addressCountry": siteConfig.address.country
       },
       "openingHoursSpecification": [
         {
