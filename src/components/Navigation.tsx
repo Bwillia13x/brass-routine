@@ -5,6 +5,7 @@ import { Button } from './ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
 import { siteConfig } from '@/lib/site-config';
+import andreasLogo from '@/assets/andreas-logo.png';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,14 +14,14 @@ const Navigation = () => {
   const navigate = useNavigate();
 
   const navLinks = [
-    { name: 'Home', href: '/' },
-    { name: 'Services', href: '/services' },
-    { name: 'Reserve', href: '/reserve' },
-    { name: 'Membership', href: '/membership' },
-    { name: 'SkinBar', href: '/skinbar' },
-    { name: 'Wedding', href: '/wedding' },
-    { name: 'About', href: '/about' },
-    { name: 'Contact', href: '/contact' }
+    { name: 'Home', href: '/', delayClass: '[animation-delay:0s]' },
+    { name: 'Services', href: '/services', delayClass: '[animation-delay:0.1s]' },
+    { name: 'Reserve', href: '/reserve', delayClass: '[animation-delay:0.2s]' },
+    { name: 'Membership', href: '/membership', delayClass: '[animation-delay:0.3s]' },
+    { name: 'SkinBar', href: '/skinbar', delayClass: '[animation-delay:0.4s]' },
+    { name: 'Wedding', href: '/wedding', delayClass: '[animation-delay:0.5s]' },
+    { name: 'About', href: '/about', delayClass: '[animation-delay:0.6s]' },
+    { name: 'Contact', href: '/contact', delayClass: '[animation-delay:0.7s]' }
   ];
 
   const handleCallClick = () => {
@@ -38,29 +39,30 @@ const Navigation = () => {
               className="flex items-center hover:opacity-80 transition-all duration-300 magnetic-hover group"
             >
               <img 
-                src="/lovable-uploads/b046a3c5-1c1b-45b4-bec5-34fe783f8f54.png" 
+                src={andreasLogo}
                 alt="Andreas & Co. Grooming Lounge"
-                className="h-12 w-12 md:h-14 md:w-14 transition-all duration-300 group-hover:drop-shadow-[0_0_15px_rgba(199,164,90,0.4)]"
+                className="h-12 w-12 md:h-14 md:w-14 transition-all duration-300 group-hover:drop-shadow-[0_0_15px_rgba(199,164,90,0.4)] focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-coal rounded-sm"
               />
             </NavLink>
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
-            {navLinks.map((link, index) => (
+            {navLinks.map((link) => (
               <NavLink
                 key={link.name}
                 to={link.href}
                 className={({ isActive }) =>
-                  `font-medium transition-all duration-300 link-underline hover:text-brass relative group animate-fade-in ${
+                  `font-medium transition-all duration-300 link-underline hover:text-brass relative group animate-fade-in focus-visible:outline-none ${link.delayClass} ${
                     isActive 
-                      ? 'text-brass' 
+                      ? 'text-brass after:opacity-100' 
                       : 'text-porcelain'
                   }`
                 }
-                style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <span className="group-hover:tracking-wide transition-all duration-300">{link.name}</span>
+                <span className="group-hover:tracking-wide transition-all duration-300 focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-coal rounded-sm px-1 py-0.5">
+                  {link.name}
+                </span>
               </NavLink>
             ))}
           </div>

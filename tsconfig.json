@@ -6,11 +6,11 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "noImplicitAny": false,
-    "noUnusedParameters": false,
+    "types": ["vitest/globals"],
     "skipLibCheck": true,
     "allowJs": true,
-    "noUnusedLocals": false,
-    "strictNullChecks": false
-  }
+    "strict": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "exclude": ["supabase/functions"]
 }

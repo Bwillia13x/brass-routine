@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { MapPin, Phone, Clock, Mail, Navigation, CalendarCheck, UsersRound, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/hooks/use-toast';
@@ -12,6 +12,7 @@ import Layout from '../components/Layout';
 import PageHero from '../components/PageHero';
 import PageSection from '../components/PageSection';
 import { submitContactMessage } from '@/integrations/supabase/service';
+import NotificationStatusBanner from '@/components/NotificationStatusBanner';
 import { siteConfig } from '@/lib/site-config';
 
 const contactFormSchema = z.object({
@@ -54,16 +55,16 @@ const Contact = () => {
 
     if (result.success === false) {
       toast({
-        title: 'Unable to send message',
-        description: result.error,
+        title: 'Message not sent',
+        description: `${result.error} If this keeps happening, call ${siteConfig.contact.formattedPhone}.`,
         variant: 'destructive',
       });
       return;
     }
 
     toast({
-      title: 'Message Sent!',
-      description: "Thank you for contacting us. We'll get back to you soon.",
+      title: 'Concierge notified',
+      description: 'Thanks for reaching out—our team will respond within one business day.',
     });
 
     form.reset({
@@ -95,10 +96,10 @@ const Contact = () => {
         align="left"
         actions={(
           <>
-            <Button className="btn-brass" onClick={() => navigate('/book')}>
+            <Button className="btn-brass text-lg px-8 py-4" onClick={() => navigate('/book')}>
               Book an appointment
             </Button>
-            <Button variant="outline" className="btn-outline-brass" onClick={() => window.open(`tel:${siteConfig.contact.phone}`)}>
+            <Button variant="outline" className="btn-outline-brass text-lg px-8 py-4" onClick={() => window.open(`tel:${siteConfig.contact.phone}`)}>
               Call the lounge
             </Button>
           </>
@@ -193,10 +194,16 @@ const Contact = () => {
           </div>
         </div>
 
-        <div className="surface-panel p-8 lg:col-span-3">
+        <div className="surface-panel p-8 lg:col-span-3 space-y-6">
+          <NotificationStatusBanner context="contact" />
           <h2 className="font-display text-2xl font-semibold text-brass mb-6">Send us a message</h2>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <div aria-live="polite" className="sr-only">
+                {form.formState.errors && Object.keys(form.formState.errors).length > 0
+                  ? 'There are issues with your message. Please review the highlighted fields.'
+                  : ''}
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -207,6 +214,7 @@ const Contact = () => {
                       <FormControl>
                         <Input {...field} className={inputClass} placeholder="Your first name" />
                       </FormControl>
+                      <FormDescription>Let us know who we’ll be greeting when we reply.</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -220,6 +228,7 @@ const Contact = () => {
                       <FormControl>
                         <Input {...field} className={inputClass} placeholder="Your last name" />
                       </FormControl>
+                      <FormDescription>Helps us align inquiries with existing bookings or memberships.</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -236,6 +245,7 @@ const Contact = () => {
                       <FormControl>
                         <Input {...field} className={inputClass} placeholder="your.email@example.com" />
                       </FormControl>
+                      <FormDescription>We’ll reply here with appointment details or concierge notes.</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -249,6 +259,7 @@ const Contact = () => {
                       <FormControl>
                         <Input {...field} className={inputClass} placeholder="(123) 456-7890" />
                       </FormControl>
+                      <FormDescription>Add a phone number if you’d like concierge to follow up by call or text.</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -271,6 +282,7 @@ const Contact = () => {
                         <option value="general">General Question</option>
                       </select>
                     </FormControl>
+                    <FormDescription>Choose the topic that best matches your message so we can route it quickly.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -290,6 +302,7 @@ const Contact = () => {
                         placeholder="Tell us how we can help you..."
                       />
                     </FormControl>
+                    <FormDescription>Share timing preferences, event details, or anything else we should know.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

@@ -2,13 +2,14 @@ import { Calendar, ArrowRight, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import heroLoungeImage from '@/assets/hero-lounge.jpg';
+import andreasLogo from '@/assets/andreas-logo.png';
 
 const Hero = () => {
   const navigate = useNavigate();
   const calibreMarkers = [
-    { icon: Check, text: 'Expert Consultation' },
-    { icon: Check, text: 'Signature Finish Ritual' },
-    { icon: Check, text: 'Two-Tap Booking' }
+    { icon: Check, text: 'Expert Consultation', delayClass: '[animation-delay:1.6s]' },
+    { icon: Check, text: 'Signature Finish Ritual', delayClass: '[animation-delay:1.8s]' },
+    { icon: Check, text: 'Two-Tap Booking', delayClass: '[animation-delay:2s]' }
   ];
 
   return (
@@ -20,7 +21,8 @@ const Hero = () => {
           alt="Andreas & Co. luxury grooming lounge interior"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-coal/75 backdrop-blur-sm"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-coal/85 via-coal/70 to-coal/40" />
+        <div className="absolute inset-0 bg-coal/30 backdrop-blur-[2px]" />
       </div>
 
       {/* Art Deco Pattern Overlay */}
@@ -35,7 +37,7 @@ const Hero = () => {
           {/* Main Logo */}
           <div className="mb-8 animate-fade-in">
             <img 
-              src="/lovable-uploads/b046a3c5-1c1b-45b4-bec5-34fe783f8f54.png" 
+              src={andreasLogo}
               alt="Andreas & Co. Grooming Lounge"
               className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 mx-auto mb-6 magnetic-hover glow-on-hover"
             />
@@ -75,11 +77,10 @@ const Hero = () => {
 
           {/* Calibre Markers */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl mx-auto">
-            {calibreMarkers.map((marker, index) => (
+            {calibreMarkers.map((marker) => (
               <div 
-                key={index} 
-                className="flex items-center justify-center space-x-3 animate-fade-in interactive-hover group magnetic-hover"
-                style={{ animationDelay: `${1.6 + index * 0.2}s` }}
+                key={marker.text}
+                className={`flex items-center justify-center space-x-3 animate-fade-in interactive-hover group magnetic-hover ${marker.delayClass}`}
               >
                 <div className="w-8 h-8 rounded-full bg-gradient-brass flex items-center justify-center flex-shrink-0 group-hover:animate-elastic">
                   <marker.icon className="w-4 h-4 text-coal group-hover:scale-110 transition-transform duration-300" />

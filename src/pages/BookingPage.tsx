@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Calendar, Clock, User, Phone, Mail, CreditCard, ShieldCheck, MessageCircle, Sparkles } from 'lucide-react';
 import { Button } from '../components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/hooks/use-toast';
@@ -14,6 +14,7 @@ import Layout from '../components/Layout';
 import PageHero from '../components/PageHero';
 import PageSection from '../components/PageSection';
 import { submitAppointmentRequest } from '@/integrations/supabase/service';
+import NotificationStatusBanner from '@/components/NotificationStatusBanner';
 import { siteConfig } from '@/lib/site-config';
 
 const membershipOptions = ['none', 'classic', 'reserve', 'interested'] as const;
@@ -99,16 +100,16 @@ const BookingPage = () => {
 
     if (result.success === false) {
       toast({
-        title: 'Unable to submit',
-        description: result.error,
+        title: 'Request not sent',
+        description: `${result.error} If the issue continues, call ${siteConfig.contact.formattedPhone}.`,
         variant: 'destructive',
       });
       return;
     }
 
     toast({
-      title: 'Appointment Requested!',
-      description: "We'll contact you within 24 hours to confirm your appointment.",
+      title: 'Concierge notified',
+      description: 'Our concierge team received your request and will respond within 24 hours.',
     });
 
     form.reset({
@@ -237,6 +238,9 @@ const BookingPage = () => {
         title="After you request an appointment"
         align="center"
       >
+        <div className="max-w-3xl mx-auto mb-8">
+          <NotificationStatusBanner context="booking" />
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {bookingHighlights.map((highlight, index) => (
             <div key={index} className="surface-panel p-6 space-y-3 text-left md:text-center">
@@ -259,6 +263,11 @@ const BookingPage = () => {
       >
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-2xl mx-auto space-y-6">
+            <div aria-live="polite" className="sr-only">
+              {form.formState.errors && Object.keys(form.formState.errors).length > 0
+                ? 'There are errors in the form. Please check highlighted fields.'
+                : ''}
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -269,6 +278,7 @@ const BookingPage = () => {
                     <FormControl>
                       <Input {...field} className={inputClass} placeholder="Your first name" />
                     </FormControl>
+                    <FormDescription>Provide the first name we should use when confirming your booking.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -282,6 +292,7 @@ const BookingPage = () => {
                     <FormControl>
                       <Input {...field} className={inputClass} placeholder="Your last name" />
                     </FormControl>
+                    <FormDescription>Helps the concierge match memberships and prior visits.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -298,6 +309,7 @@ const BookingPage = () => {
                     <FormControl>
                       <Input {...field} className={inputClass} placeholder="(123) 456-7890" />
                     </FormControl>
+                    <FormDescription>We’ll call or text this number to confirm availability.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -311,6 +323,7 @@ const BookingPage = () => {
                     <FormControl>
                       <Input {...field} className={inputClass} placeholder="your.email@example.com" />
                     </FormControl>
+                    <FormDescription>Confirmation details arrive here, so use an inbox you check often.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -337,6 +350,7 @@ const BookingPage = () => {
                         <option value="consultation">Consultation Only</option>
                       </select>
                     </FormControl>
+                    <FormDescription>Select the experience you’re excited about—we can always adjust during consultation.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -355,6 +369,7 @@ const BookingPage = () => {
                         <option value="interested">Interested in Membership</option>
                       </select>
                     </FormControl>
+                    <FormDescription>Let us know your tier so we can apply perks or set up your membership consult.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -375,6 +390,7 @@ const BookingPage = () => {
                       placeholder="Let us know your preferred dates, times, and any special requests..."
                     />
                   </FormControl>
+                  <FormDescription>Include a few options—our concierge will confirm the closest match.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

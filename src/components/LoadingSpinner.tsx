@@ -14,11 +14,18 @@ const LoadingSpinner = ({ size = 'md', className, text }: LoadingSpinnerProps) =
   };
 
   return (
-    <div className={cn('flex flex-col items-center justify-center gap-3', className)}>
-      <div className={cn(
-        'animate-spin rounded-full border-2 border-muted border-t-brass',
-        sizeClasses[size]
-      )} />
+    <div
+      className={cn('flex flex-col items-center justify-center gap-3', className)}
+      role="status"
+      aria-live="polite"
+    >
+      <div
+        className={cn(
+          'animate-spin rounded-full border-2 border-muted border-t-brass',
+          sizeClasses[size]
+        )}
+        aria-hidden="true"
+      />
       {text && (
         <p className="text-sm text-muted-foreground animate-pulse">{text}</p>
       )}
