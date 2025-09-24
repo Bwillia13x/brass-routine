@@ -1,7 +1,7 @@
 export const siteConfig = {
   name: "Andreas & Co.",
   tagline: "Grooming Lounge",
-  siteUrl: "https://andreasandco.ca",
+  siteUrl: "https://andreas-co.lovable.app",
   address: {
     line1: "245 10 Ave SW",
     line2: "Suite 210",

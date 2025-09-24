@@ -12,3 +12,9 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+# Sitemap
+Sitemap: https://andreas-co.lovable.app/sitemap.xml
+
+# Performance optimizations
+Crawl-delay: 1

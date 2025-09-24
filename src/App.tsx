@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import Analytics from "@/components/Analytics";
+import PWAManifest from "@/components/PWAManifest";
 // Lazy load components for better performance
 const Index = lazy(() => import("./pages/Index"));
 const Services = lazy(() => import("./pages/Services"));
@@ -40,9 +42,11 @@ function App() {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
+          <Analytics />
+          <PWAManifest />
           <Toaster />
           <Sonner />
-          <BrowserRouter>
+          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <Suspense fallback={<PageLoadingFallback />}>
               <Routes>
                 <Route path="/" element={<Index />} />
