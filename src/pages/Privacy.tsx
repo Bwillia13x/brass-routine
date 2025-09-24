@@ -2,7 +2,13 @@ import Layout from '../components/Layout';
 
 const Privacy = () => {
   return (
-    <Layout>
+    <Layout 
+      seo={{
+        title: "Privacy Policy - Andreas & Co. | Calgary Grooming Lounge",
+        description: "Read Andreas & Co.'s privacy policy regarding personal information collection, use, and protection for our Calgary grooming services.",
+        type: "article"
+      }}
+    >
       <div className="pt-12 pb-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           

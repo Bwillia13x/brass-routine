@@ -97,7 +97,7 @@ const BookingPage = () => {
       preferredDateTime: values.preferredDateTime,
     });
 
-    if (!result.success) {
+    if (result.success === false) {
       toast({
         title: 'Unable to submit',
         description: result.error,
@@ -126,7 +126,14 @@ const BookingPage = () => {
   const isSubmitting = form.formState.isSubmitting;
 
   return (
-    <Layout>
+    <Layout 
+      seo={{
+        title: "Book Appointment - Andreas & Co. | Premium Men's Grooming Calgary",
+        description: "Book your grooming appointment at Andreas & Co. Calgary. Online booking for cuts, facials, shaves, and membership services.",
+        keywords: "book mens haircut Calgary, grooming appointment booking, barber appointment Calgary",
+        type: "service"
+      }}
+    >
       <PageHero
         eyebrow="Book your experience"
         title="Reserve time at Andreas & Co."

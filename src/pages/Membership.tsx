@@ -91,7 +91,14 @@ const Membership = () => {
   ];
 
   return (
-    <Layout>
+    <Layout 
+      seo={{
+        title: "Membership - Andreas & Co. | Classic & Reserve Tier Memberships",
+        description: "Join Andreas & Co. membership for priority booking, service credits, and exclusive perks. Classic and Reserve tier memberships available.",
+        keywords: "membership Calgary barber, grooming membership, priority booking, mens grooming club Calgary",
+        type: "service"
+      }}
+    >
       <PageHero
         eyebrow="Membership"
         title="Look sharp, always"

@@ -2,7 +2,13 @@ import Layout from '../components/Layout';
 
 const Terms = () => {
   return (
-    <Layout>
+    <Layout 
+      seo={{
+        title: "Terms of Service - Andreas & Co. | Calgary Grooming Lounge",
+        description: "Review Andreas & Co.'s terms of service for appointments, memberships, and grooming services in Calgary.",
+        type: "article"
+      }}
+    >
       <div className="pt-12 pb-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           

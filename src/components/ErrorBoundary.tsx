@@ -44,6 +44,7 @@ class ErrorBoundary extends Component<Props, State> {
   };
 
   handleGoHome = () => {
+    // Use window.location for error recovery to ensure fresh app state
     window.location.href = '/';
   };
 

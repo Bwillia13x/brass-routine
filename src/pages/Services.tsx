@@ -125,7 +125,14 @@ const Services = () => {
   ];
 
   return (
-    <Layout>
+    <Layout 
+      seo={{
+        title: "Services - Andreas & Co. | Premium Men's Grooming Calgary",
+        description: "Discover precision cuts, SkinBar facials, traditional shaves, and massage therapy at Andreas & Co. Premium men's grooming services in Calgary.",
+        keywords: "mens haircut Calgary, barber shop Calgary, SkinBar facial, traditional shave, beard sculpting, mens grooming services",
+        type: "service"
+      }}
+    >
       <PageHero
         eyebrow="Services"
         title="The Andreas & Co. service menu"

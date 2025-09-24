@@ -7,7 +7,13 @@ import { siteConfig } from '@/lib/site-config';
 const Cancellation = () => {
   const navigate = useNavigate();
   return (
-    <Layout>
+    <Layout 
+      seo={{
+        title: "Cancellation Policy - Andreas & Co. | Calgary Grooming Appointments",
+        description: "Understand Andreas & Co.'s cancellation and rescheduling policies for grooming appointments and membership services in Calgary.",
+        type: "article"
+      }}
+    >
       <div className="pt-12 pb-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           
@@ -153,7 +159,7 @@ const Cancellation = () => {
                     <Button
                       variant="outline"
                       className="btn-outline-brass w-full justify-start"
-                      onClick={() => window.location.href = 'mailto:appointments@andreasandco.ca'}
+                      onClick={() => window.open('mailto:appointments@andreasandco.ca')}
                     >
                       <Mail className="w-4 h-4 mr-3" />
                       Email: appointments@andreasandco.ca

@@ -52,7 +52,7 @@ const Contact = () => {
       message: values.message,
     });
 
-    if (!result.success) {
+    if (result.success === false) {
       toast({
         title: 'Unable to send message',
         description: result.error,
@@ -80,7 +80,14 @@ const Contact = () => {
   const isSubmitting = form.formState.isSubmitting;
 
   return (
-    <Layout>
+    <Layout 
+      seo={{
+        title: "Contact Us - Andreas & Co. | Calgary Grooming Lounge",
+        description: "Contact Andreas & Co. Calgary for appointments, membership information, and inquiries. Located in the heart of Calgary.",
+        keywords: "contact Calgary barber, Andreas Co location, grooming lounge Calgary contact",
+        type: "website"
+      }}
+    >
       <PageHero
         eyebrow="Visit the lounge"
         title="Book a visit or plan a private experience"

@@ -106,7 +106,13 @@ const Auth = () => {
 
   if (!isSupabaseConfigured) {
     return (
-      <Layout>
+      <Layout 
+        seo={{
+          title: "Sign In - Andreas & Co. | Member Portal Calgary",
+          description: "Sign in to your Andreas & Co. member account to book appointments, manage your membership, and access exclusive benefits.",
+          type: "website"
+        }}
+      >
         <div className="pt-12 pb-20">
           <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
             <div className="space-y-4">
@@ -121,7 +127,7 @@ const Auth = () => {
                 <Phone className="w-4 h-4 mr-2" />
                 Call {siteConfig.contact.formattedPhone}
               </Button>
-              <Button variant="outline" className="btn-outline-brass" onClick={() => (window.location.href = `mailto:${siteConfig.contact.email}`)}>
+              <Button variant="outline" className="btn-outline-brass" onClick={() => window.open(`mailto:${siteConfig.contact.email}`)}>
                 <Mail className="w-4 h-4 mr-2" />
                 Email {siteConfig.contact.email}
               </Button>
