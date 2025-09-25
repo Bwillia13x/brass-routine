@@ -16,22 +16,40 @@ import PageSection from '../components/PageSection';
 import { submitAppointmentRequest } from '@/integrations/supabase/service';
 import NotificationStatusBanner from '@/components/NotificationStatusBanner';
 import { siteConfig } from '@/lib/site-config';
+import { sanitizeInput, isValidEmail, isValidPhone, rateLimiter } from '@/utils/security';
 
 const membershipOptions = ['none', 'classic', 'reserve', 'interested'] as const;
 
 const bookingFormSchema = z.object({
-  firstName: z.string().min(1, 'First name is required'),
-  lastName: z.string().min(1, 'Last name is required'),
+  firstName: z.string()
+    .min(1, 'First name is required')
+    .max(100, 'First name must be less than 100 characters')
+    .transform(sanitizeInput),
+  lastName: z.string()
+    .min(1, 'Last name is required')
+    .max(100, 'Last name must be less than 100 characters')
+    .transform(sanitizeInput),
   phone: z
     .string()
     .min(7, 'Phone number is required')
-    .regex(/^[0-9+().\-\s]*$/, 'Enter a valid phone number'),
-  email: z.string().email('Enter a valid email address'),
-  service: z.string().min(1, 'Please select a service'),
+    .max(20, 'Phone number must be less than 20 characters')
+    .transform(sanitizeInput)
+    .refine(isValidPhone, 'Enter a valid phone number'),
+  email: z.string()
+    .max(254, 'Email must be less than 254 characters')
+    .transform(sanitizeInput)
+    .refine(isValidEmail, 'Enter a valid email address'),
+  service: z.string()
+    .min(1, 'Please select a service')
+    .max(200, 'Service selection must be less than 200 characters')
+    .transform(sanitizeInput),
   membershipStatus: z.enum(membershipOptions, {
     errorMap: () => ({ message: 'Select your membership status' }),
   }),
-  preferredDateTime: z.string().min(5, 'Share your preferred dates and times'),
+  preferredDateTime: z.string()
+    .min(5, 'Share your preferred dates and times')
+    .max(2000, 'Request must be less than 2000 characters')
+    .transform(sanitizeInput),
 });
 
 type BookingFormValues = z.infer<typeof bookingFormSchema>;
@@ -84,6 +102,17 @@ const BookingPage = () => {
         variant: 'destructive',
       });
       navigate('/auth');
+      return;
+    }
+
+    // Apply rate limiting (5 booking requests per hour per user)
+    const rateLimitKey = `booking_${user.id}`;
+    if (!rateLimiter.isAllowed(rateLimitKey, 5, 3600000)) {
+      toast({
+        title: 'Too many requests',
+        description: 'Please wait before submitting another booking request. Call us if urgent.',
+        variant: 'destructive',
+      });
       return;
     }
 

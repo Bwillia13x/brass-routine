@@ -14,17 +14,33 @@ import PageSection from '../components/PageSection';
 import { submitContactMessage } from '@/integrations/supabase/service';
 import NotificationStatusBanner from '@/components/NotificationStatusBanner';
 import { siteConfig } from '@/lib/site-config';
+import { sanitizeInput, isValidEmail, isValidPhone, rateLimiter } from '@/utils/security';
 
 const contactFormSchema = z.object({
-  firstName: z.string().min(1, 'First name is required'),
-  lastName: z.string().min(1, 'Last name is required'),
-  email: z.string().email('Enter a valid email address'),
+  firstName: z.string()
+    .min(1, 'First name is required')
+    .max(100, 'First name must be less than 100 characters')
+    .transform(sanitizeInput),
+  lastName: z.string()
+    .min(1, 'Last name is required')
+    .max(100, 'Last name must be less than 100 characters')
+    .transform(sanitizeInput),
+  email: z.string()
+    .max(254, 'Email must be less than 254 characters')
+    .transform(sanitizeInput)
+    .refine(isValidEmail, 'Enter a valid email address'),
   phone: z
     .string()
-    .trim()
-    .refine((value) => value === '' || /^[0-9+().\-\s]*$/.test(value), 'Enter a valid phone number'),
-  subject: z.string().min(1, 'Select a subject'),
-  message: z.string().min(10, 'Please share a few details so our team can assist you.'),
+    .transform(sanitizeInput)
+    .refine((value) => value === '' || isValidPhone(value), 'Enter a valid phone number'),
+  subject: z.string()
+    .min(1, 'Select a subject')
+    .max(200, 'Subject must be less than 200 characters')
+    .transform(sanitizeInput),
+  message: z.string()
+    .min(10, 'Please share a few details so our team can assist you.')
+    .max(2000, 'Message must be less than 2000 characters')
+    .transform(sanitizeInput),
 });
 
 type ContactFormValues = z.infer<typeof contactFormSchema>;
@@ -44,6 +60,17 @@ const Contact = () => {
   });
 
   const onSubmit = async (values: ContactFormValues) => {
+    // Apply rate limiting (5 submissions per hour)
+    const rateLimitKey = `contact_${values.email}`;
+    if (!rateLimiter.isAllowed(rateLimitKey, 5, 3600000)) {
+      toast({
+        title: 'Too many requests',
+        description: 'Please wait before submitting another message. Call us if urgent.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     const result = await submitContactMessage({
       firstName: values.firstName,
       lastName: values.lastName,
